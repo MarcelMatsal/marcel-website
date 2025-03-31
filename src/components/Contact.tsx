@@ -6,7 +6,7 @@ export default function Contact() {
       <h2 className="text-3xl font-bold mb-8 text-center">Get in Touch</h2>
       <div className="max-w-xl mx-auto text-center">
         <p className="text-gray-600 dark:text-gray-300 mb-8">
-          Think I'd be a good fit for your team? I'm always interested in hearing about new projects, opportunities, and challenges!
+          Think I&apos;d be a good fit for your team? I&apos;m always interested in hearing about new projects, opportunities, and challenges!
         </p>
         <a
           href="mailto:marcel_mateos_salles@brown.edu"

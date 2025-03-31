@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { FaJava, FaPython, FaReact, FaNodeJs, FaDocker, FaGit, FaCss3, FaHtml5 } from 'react-icons/fa'; // Example icons
+import { FaJava, FaPython, FaReact, FaCss3, FaHtml5 } from 'react-icons/fa'; // Example icons
 import { SiTypescript, SiJavascript, SiR, SiNextdotjs, SiTensorflow, SiTailwindcss, SiPytorch, SiApachespark, SiGraphql } from 'react-icons/si';
 
 export default function Skills({ onSkillSelect }: { onSkillSelect: (selectedSkills: string[]) => void }) {
@@ -89,11 +89,6 @@ export default function Skills({ onSkillSelect }: { onSkillSelect: (selectedSkil
     { name: 'AWS', icon: <FaPython /> },
     { name: 'Flask', icon: <FaPython /> },
     { name: 'HuggingFace', icon: <FaPython /> },
-  ];
-
-  const technologies = [
-    { name: 'Git', icon: <FaGit /> },
-    { name: 'Docker', icon: <FaDocker /> },
   ];
 
   return (
