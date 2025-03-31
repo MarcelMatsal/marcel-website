@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
-import MeSection from '@/components/MeSection';
 import HomeAndAboutSection from '@/components/HomeAndAbout';
-import About from '@/components/About';
 import Skills from '@/components/Skills';
 import Projects from '@/components/Projects';
 import Contact from '@/components/Contact';

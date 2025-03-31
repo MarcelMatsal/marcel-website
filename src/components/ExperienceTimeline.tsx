@@ -2,7 +2,6 @@
 
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
-import { FaBriefcase, FaGraduationCap } from 'react-icons/fa';
 
 export default function TimelineSection() {
   return (

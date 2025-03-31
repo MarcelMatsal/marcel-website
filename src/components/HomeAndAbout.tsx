@@ -135,8 +135,8 @@ export default function HomeAndAboutSection() {
 
         {/* About Text */}
         <p className="text-gray-600 dark:text-gray-300 mt-1">
-          Hey! I'm Marcel, a junior at Brown University studying Computer Science and Economics.
-          I'm a <span className="text-blue-500 font-bold">backend engineer</span> and  <span className="text-blue-500 font-bold">ML/AI/DL researcher </span> with a passion for intersecting software 
+          Hey! I&apos;m Marcel, a junior at Brown University studying Computer Science and Economics.
+          I&apos;m a <span className="text-blue-500 font-bold">backend engineer</span> and  <span className="text-blue-500 font-bold">ML/AI/DL researcher </span> with a passion for intersecting software 
           engineering with cutting-edge research in ML/AI/DL. My current research interests lie in
           LLMs, model interetability, and self-supervised learning. This summer I will be <span className="text-blue-500 font-bold"> interning at Pinterest </span> as a backend engineer in the <span className="text-blue-500 font-bold"> Infrastructure Organization </span> and am currently
           a researcher with <a href="https://randallbalestriero.github.io/" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">Prof. Randall Balestriero</a>.
