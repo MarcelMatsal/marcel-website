@@ -58,6 +58,28 @@ export default function TimelineSection() {
           <p className="text-white font-bold">Researching spurious correlation & collaborating with Atlassian</p>
         </VerticalTimelineElement>
 
+                {/* Timeline Element 3 */}
+                <VerticalTimelineElement
+                className="vertical-timeline-element--work"
+                contentStyle={{ background: '#9fd893', color: '#ffffff' }} // Lighter green background and white text
+                contentArrowStyle={{ borderRight: '7px solid #9fd893' }} // Arrow matches the background
+                date="Jun 2024 - Aug 2024"
+                dateClassName="text-black dark:text-white font-bold"
+                iconStyle={{ background: '#9fd893', color: '#ffffff' }} // Icon background matches and text remains white
+                icon={
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="24" height="24">
+                    <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 464c-114.7 0-208-93.31-208-208S141.3 48 256 48s208 93.31 208 208S370.7 464 256 464zM256 128c-70.58 0-128 57.42-128 128s57.42 128 128 128c70.58 0 128-57.42 128-128S326.6 128 256 128zM256 336c-44.11 0-80-35.89-80-80c0-44.11 35.89-80 80-80c44.11 0 80 35.89 80 80C336 300.1 300.1 336,256,336z"/>
+                  </svg>
+              }
+              >
+              <h3 className="vertical-timeline-element-title text-white">Software Engineer Intern</h3>
+              <h4 className="vertical-timeline-element-subtitle text-white">Dexcom</h4>
+              <p className="text-white font-bold">
+                  Developed architecture for a new mobile app and designed a novel algorithm to target
+                  700k new stakeholders
+              </p>
+              </VerticalTimelineElement>
+
         {/* Timeline Element 4 */}
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
