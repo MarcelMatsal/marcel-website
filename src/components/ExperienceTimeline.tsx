@@ -55,7 +55,7 @@ export default function TimelineSection() {
         >
           <h3 className="vertical-timeline-element-title"> Researcher</h3>
           <h4 className="vertical-timeline-element-subtitle">Balestriero Lab @ Brown University</h4>
-          <p className="text-white font-bold">Researching spurious correlation & collaborating with Atlassian</p>
+          <p className="text-white font-bold">Researching spurious correlation of AI models</p>
         </VerticalTimelineElement>
 
                 {/* Timeline Element 3 */}
