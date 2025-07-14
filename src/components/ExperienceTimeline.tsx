@@ -21,6 +21,7 @@ export default function TimelineSection() {
           <h3 className="vertical-timeline-element-title">Software Engineer Intern</h3>
           <h4 className="vertical-timeline-element-subtitle">Pinterest</h4>
           <p className="text-white font-bold">Backend - Observability Team</p>
+          <p className="text-white font-bold">Developing GenAI tools (such as agents, MCP servers, anomaly detection) for all engineers at Pinterest.</p>
         </VerticalTimelineElement>
         
 
@@ -29,7 +30,7 @@ export default function TimelineSection() {
           className="vertical-timeline-element--work"
           contentStyle={{ background: '#99C1FF', color: '#fff' }}
           contentArrowStyle={{ borderRight: '7px solid #99C1FF' }}
-          date="Dec 2024 - Present"
+          date="Dec 2024 - May 2025"
           dateClassName="text-gray-900 dark:text-white font-bold"
           iconStyle={{ background: '#99C1FF', color: '#fff' }}
           icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" fill="currentColor" width="24" height="24">
@@ -55,7 +56,7 @@ export default function TimelineSection() {
         >
           <h3 className="vertical-timeline-element-title"> Researcher</h3>
           <h4 className="vertical-timeline-element-subtitle">Balestriero Lab @ Brown University</h4>
-          <p className="text-white font-bold">Researching spurious correlation of AI models</p>
+          <p className="text-white font-bold">Researching spurious correlation in language models. <a href="https://arxiv.org/abs/2506.11402" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">Check out our new paper!</a></p>
         </VerticalTimelineElement>
 
                 {/* Timeline Element 3 */}
