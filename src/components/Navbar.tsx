@@ -193,7 +193,7 @@ export default function Navbar() {
                   LinkedIn
                 </a>
                 <a
-                  href="/MarcelSWEResume.pdf"
+                  href="/MarcelSWEResume25.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 text-base font-medium transition-colors"

@@ -70,7 +70,7 @@ export default function HomeAndAboutSection() {
 
             {/* Resume Link */}
             <a
-              href="/MarcelSWEResume.pdf"
+              href="/MarcelSWEResume25.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
