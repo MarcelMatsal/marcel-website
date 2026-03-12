@@ -22,7 +22,7 @@ export default function TimelineSection() {
           </svg>}
         >
           <h3 className="vertical-timeline-element-title">Head Teaching Assistant</h3>
-          <h4 className="vertical-timeline-element-subtitle">CSCI1460</h4>
+          <h4 className="vertical-timeline-element-subtitle">CSCI1460: Computational Linguistics</h4>
           <p className="text-white font-bold">Brown University</p>
         </VerticalTimelineElement>
 
