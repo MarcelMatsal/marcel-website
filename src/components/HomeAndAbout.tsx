@@ -51,6 +51,23 @@ export default function HomeAndAboutSection() {
               </svg>
             </a>
 
+            {/* Google Scholar Link */}
+            <a
+              href="https://scholar.google.com/citations?hl=en&user=7QmQOSgAAAAJ&inst=7213243471243491304"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                className="h-6 w-6"
+              >
+                <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 10a8 8 0 0 1 7.162 3.44L24 9.5z"/>
+              </svg>
+            </a>
+
             {/* LinkedIn Link */}
             <a
               href="https://www.linkedin.com/in/marcelmatsal/"

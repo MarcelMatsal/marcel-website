@@ -112,6 +112,15 @@ export default function Navbar() {
               GitHub
             </a>
             <a
+              href="https://scholar.google.com/citations?hl=en&user=7QmQOSgAAAAJ&inst=7213243471243491304"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xl font-bold cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              <i className="fas fa-graduation-cap"></i>
+              Scholar
+            </a>
+            <a
               href="https://www.linkedin.com/in/marcelmatsal/"
               target="_blank"
               rel="noopener noreferrer"
@@ -183,6 +192,14 @@ export default function Navbar() {
                   className="block text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 text-base font-medium transition-colors"
                 >
                   GitHub
+                </a>
+                <a
+                  href="https://scholar.google.com/citations?hl=en&user=7QmQOSgAAAAJ&inst=7213243471243491304"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 text-base font-medium transition-colors"
+                >
+                  Scholar
                 </a>
                 <a
                   href="https://www.linkedin.com/in/marcelmatsal/"
