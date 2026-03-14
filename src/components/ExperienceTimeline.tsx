@@ -75,8 +75,8 @@ export default function TimelineSection() {
           </svg>}
         >
           <h3 className="vertical-timeline-element-title"> Researcher</h3>
-          <h4 className="vertical-timeline-element-subtitle">Balestriero Lab @ Brown University</h4>
-          <p className="text-white font-bold">Researching spurious correlation in language models. <a href="https://arxiv.org/abs/2506.11402" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">Check out our new paper!</a></p>
+          <h4 className="vertical-timeline-element-subtitle">GalilAI Group @ Brown University</h4>
+          <p className="text-white font-bold">Researching spurious correlation in language models. <a href="https://arxiv.org/abs/2506.11402" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">Check out our new paper!</a> Papers in workshops at NeurIPS 2025 (poster) and ICLR 2026 (oral).</p>
         </VerticalTimelineElement>
 
                 {/* Timeline Element 3 */}
