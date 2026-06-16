@@ -89,6 +89,7 @@ export default function Skills({ onSkillSelect }: { onSkillSelect: (selectedSkil
     { name: 'AWS', icon: <FaPython /> },
     { name: 'Flask', icon: <FaPython /> },
     { name: 'HuggingFace', icon: <FaPython /> },
+    { name: 'PEFT', icon: <FaPython /> },
   ];
 
   return (

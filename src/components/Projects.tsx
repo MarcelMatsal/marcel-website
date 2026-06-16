@@ -35,6 +35,22 @@ export default function Projects({ selectedSkills }: ProjectsProps) {
   }, [expandedIndex]);
 
   const projects = [
+
+    {
+      title: "When Efficiency Enables Shortcuts: Studying Spurious Correlations Under LoRA Finetuning",
+      description: "Honors thesis investigating how LoRA finetuning can introduce and amplify spurious correlations in language models.",
+      technologies: ["Python", "Pytorch", "HuggingFace", "PEFT"],
+      longDescription: "This honors thesis investigates the relationship between parameter-efficient finetuning (specifically LoRA) and spurious correlations in language models. LoRA's low-rank constraint forces models to find efficient shortcuts, which can cause them to rely on spurious features in the training data rather than the intended signal. The thesis provides empirical evidence and analysis of when and why this occurs, with implications for the safe deployment of finetuned language models.",
+      features: [
+        "Studied how LoRA's low-rank structure encourages reliance on spurious correlations during finetuning",
+        "Conducted controlled experiments across multiple datasets and model architectures",
+        "Analyzed the tradeoff between parameter efficiency and robustness to distribution shift"
+      ],
+      githubLink: undefined,
+      demoLink: "/Marcel_Mateos_Salles_Thesis.pdf",
+      imageUrl: undefined
+    },
+
     {
       title: "Reddit Depression Symptom Detection",
       description: "A computational linguistics project that uses Reddit data to detect symptoms of depression.",
