@@ -138,9 +138,7 @@ export default function HomeAndAboutSection() {
               3200,
               'Deep Learning/ML Researcher.',
               3200,
-              'D1 Athlete.',
-              3200,
-              'Teaching Assistant.',
+              'Ex D1 Athlete.',
               3200,
             ]}
             wrapper="span"
