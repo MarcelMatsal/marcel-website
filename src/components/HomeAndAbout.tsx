@@ -152,11 +152,11 @@ export default function HomeAndAboutSection() {
 
         {/* About Text */}
         <p className="text-gray-600 dark:text-gray-300 mt-1">
-          Hey! I&apos;m Marcel, a senior at Brown University studying Computer Science and Economics.
-          I&apos;m a <span className="text-blue-500 font-bold">backend engineer</span> and  <span className="text-blue-500 font-bold">ML/AI researcher </span> with a passion for intersecting software 
-          engineering with cutting-edge research in ML/AI. My current research interests lie in
-          LLMs, model interetability, and self-supervised learning. This summer I am <span className="text-blue-500 font-bold"> interning at Pinterest </span> as a backend engineer on the <span className="text-blue-500 font-bold"> observability team </span> and am currently
-          a researcher with <a href="https://randallbalestriero.github.io/" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">Prof. Randall Balestriero</a>.
+          Hey! I&apos;m Marcel, a recent grad from Brown University with a degree in Computer Science and Economics.
+          I&apos;m a <span className="text-blue-500 font-bold">backend engineer</span> and <span className="text-blue-500 font-bold">ML/AI</span> researcher with a passion for intersecting software
+          engineering with cutting-edge research in ML/AI. My current research interests lie in 
+          LLMs, model interpretability, and self-supervised learning. I&apos;m a member of the <a href="https://galilai-group.github.io/" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">GalilAI Group </a>with <a href="https://randallbalestriero.github.io/" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">Prof. Randall Balestriero</a> and an incoming Software Engineer
+          at <span className="text-blue-500 font-bold">Pinterest!</span>
         </p>
       </div>
 
