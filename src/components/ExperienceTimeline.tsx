@@ -169,6 +169,7 @@ export default function TimelineSection() {
           <h3 className="vertical-timeline-element-title">Bachelor of Science in Computer Science-Economics, Magna Cum Laude, Honors in Computer Science-Economics</h3>
           <h4 className="vertical-timeline-element-subtitle">Brown University</h4>
           <p className="text-white font-bold">GPA: 4.0/4.0</p>
+          <p className="text-white font-bold">Honors Thesis: <a href="/Marcel_Mateos_Salles_Thesis.pdf" target="_blank" rel="noopener noreferrer" className="font-normal italic hover:underline">When Efficiency Enables Shortcuts: Studying Spurious Correlations Under LoRA Finetuning</a></p>
         </VerticalTimelineElement>
 
         {/* Add more elements as needed */}
