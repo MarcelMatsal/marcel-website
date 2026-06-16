@@ -101,39 +101,39 @@ export default function Navbar() {
           </div>
 
           {/* Right side - Social Links */}
-          <div className="hidden sm:flex items-center space-x-4">
+          <div className="hidden sm:flex items-center space-x-3">
             <a
               href="https://github.com/marcelmatsal"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xl font-bold cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors"
+              aria-label="GitHub"
+              className="text-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <i className="fab fa-github"></i>
-              GitHub
             </a>
             <a
               href="https://scholar.google.com/citations?hl=en&user=7QmQOSgAAAAJ&inst=7213243471243491304"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xl font-bold cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors"
+              aria-label="Google Scholar"
+              className="text-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <i className="fas fa-graduation-cap"></i>
-              Scholar
             </a>
             <a
               href="https://www.linkedin.com/in/marcelmatsal/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xl font-bold cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors"
+              aria-label="LinkedIn"
+              className="text-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <i className="fab fa-linkedin"></i>
-              LinkedIn
             </a>
             <a
               href="/Marcel_Mateos_Salles_Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xl font-bold cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors border border-gray-300 dark:border-gray-600 rounded px-2 py-1"
             >
               Resume
             </a>
