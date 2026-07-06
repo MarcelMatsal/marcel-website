@@ -70,6 +70,35 @@ body {
   }
 }
 
+/* the model card prints as a clean light one-pager */
+@media print {
+  body {
+    background: #fff !important;
+    background-image: none !important;
+  }
+  .model-card,
+  .model-card * {
+    color: #1e293b !important;
+    border-color: #cbd5e1 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .model-card h1,
+  .model-card h2 {
+    color: #0f172a !important;
+  }
+  .model-card pre {
+    background: #f1f5f9 !important;
+  }
+  .model-card a {
+    text-decoration: underline;
+  }
+  .print-hidden {
+    display: none !important;
+  }
+}
+
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% {
     transform: translateY(0);

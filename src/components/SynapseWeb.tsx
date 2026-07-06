@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { DIVIDER_MANY, DIVIDER_HALF } from './LayerDivider';
 
 interface NodePt {
   id: string;
@@ -100,9 +101,17 @@ export default function SynapseWeb({
 }: SynapseWebProps) {
   const [points, setPoints] = useState<NodePt[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
-  // vertical reach of the stubs, in container coords: the enclosing section's
-  // edges, which sit on the midline of the LayerDivider bands between sections
-  const [extents, setExtents] = useState({ top: -48, bottom: 48 });
+  // reach of the stubs, in container coords: top/bottom are the terminal rows
+  // of the LayerDivider bands above and below (the bands tuck DIVIDER_HALF px
+  // into the section, so their ports sit that far inside the section edges);
+  // left/width are the section's full-bleed box, which the divider spans —
+  // stub endpoints use it to land on the divider's percentage-based ports
+  const [extents, setExtents] = useState({
+    top: -48,
+    bottom: 48,
+    left: 0,
+    width: 0,
+  });
   const [reducedMotion, setReducedMotion] = useState(false);
 
   const measure = useCallback(() => {
@@ -125,9 +134,14 @@ export default function SynapseWeb({
     const section = el.closest('section');
     if (section) {
       const srect = section.getBoundingClientRect();
-      setExtents({ top: srect.top - crect.top, bottom: srect.bottom - crect.top });
+      setExtents({
+        top: srect.top - crect.top + DIVIDER_HALF,
+        bottom: srect.bottom - crect.top - DIVIDER_HALF,
+        left: srect.left - crect.left,
+        width: srect.width,
+      });
     } else {
-      setExtents({ top: -48, bottom: crect.height + 48 });
+      setExtents({ top: -48, bottom: crect.height + 48, left: 0, width: crect.width });
     }
   }, [containerRef, orderedIds]);
 
@@ -155,7 +169,8 @@ export default function SynapseWeb({
 
   // stubs: nodes near the top edge receive input from the previous layer,
   // nodes near the bottom edge project to the next one; their far endpoints
-  // fan out across the full width to mirror the divider bands they meet
+  // land exactly on the divider band's terminal ports (an even spread of the
+  // DIVIDER_MANY positions, order-preserving so lines fan without crossing)
   const minY = Math.min(...points.map((p) => p.y));
   const maxY = Math.max(...points.map((p) => p.y));
   const inputs = points
@@ -164,7 +179,13 @@ export default function SynapseWeb({
   const outputs = points
     .filter((p) => p.y > maxY - 60)
     .sort((a, b) => a.x - b.x);
-  const fanX = (i: number, count: number) => (size.w * (i + 0.5)) / count;
+  const termX = (i: number, count: number) => {
+    const idx = Math.min(
+      DIVIDER_MANY.length - 1,
+      Math.max(0, Math.round(((i + 0.5) * DIVIDER_MANY.length) / count - 0.5))
+    );
+    return extents.left + (extents.width * DIVIDER_MANY[idx]) / 100;
+  };
 
   // ------- chain mode geometry -------
   // signal flows through time: oldest unit → most recent
@@ -251,14 +272,15 @@ export default function SynapseWeb({
         </linearGradient>
       </defs>
 
-      {/* input stubs: from the divider band above down into the top-row nodes */}
+      {/* input stubs: from the divider band's bottom terminal row (cyan)
+          down into the top-row nodes */}
       {inputs.map((p, i) => {
         const hl = p.id === highlightId && !isOff(p.id);
         const off = isOff(p.id);
         return (
           <g key={`in-${i}`}>
             <line
-              x1={fanX(i, inputs.length)}
+              x1={termX(i, inputs.length)}
               y1={extents.top}
               x2={p.x}
               y2={p.y}
@@ -269,19 +291,20 @@ export default function SynapseWeb({
               className={reducedMotion || off ? undefined : 'synapse-flow'}
               style={{ transition: 'opacity 0.25s' }}
             />
-            {/* terminal port where the stub meets the divider band */}
+            {/* port drawn on top of the divider's own terminal dot */}
             <circle
-              cx={fanX(i, inputs.length)}
+              cx={termX(i, inputs.length)}
               cy={extents.top}
-              r="2.5"
-              fill="#7c3aed"
+              r="2"
+              fill="#06b6d4"
               opacity={off ? 0.15 : hl ? 0.95 : 0.5}
             />
           </g>
         );
       })}
 
-      {/* output stubs: from the bottom-row nodes down into the divider band below */}
+      {/* output stubs: from the bottom-row nodes down onto the next divider
+          band's top terminal row (violet) */}
       {outputs.map((p, i) => {
         const hl = p.id === highlightId && !isOff(p.id);
         const off = isOff(p.id);
@@ -290,7 +313,7 @@ export default function SynapseWeb({
             <line
               x1={p.x}
               y1={p.y}
-              x2={fanX(i, outputs.length)}
+              x2={termX(i, outputs.length)}
               y2={extents.bottom}
               stroke={hl ? '#67e8f9' : `url(#synapse-grad-${mode})`}
               strokeWidth={hl ? 1.8 : 1.2}
@@ -300,10 +323,10 @@ export default function SynapseWeb({
               style={{ transition: 'opacity 0.25s' }}
             />
             <circle
-              cx={fanX(i, outputs.length)}
+              cx={termX(i, outputs.length)}
               cy={extents.bottom}
-              r="2.5"
-              fill="#06b6d4"
+              r="2"
+              fill="#7c3aed"
               opacity={off ? 0.15 : hl ? 0.95 : 0.5}
             />
           </g>

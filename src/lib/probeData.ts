@@ -51,6 +51,116 @@ export function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
 }
 
+/* ---- feature dictionary -------------------------------------------------
+   canonical skill names — Skills.tsx maps these to icons, ProbePanel and the
+   model card use them to know which technologies are dictionary features */
+export const languageFeatures = [
+  'Java',
+  'Python',
+  'TypeScript',
+  'JavaScript',
+  'R',
+  'CSS',
+  'HTML',
+];
+
+export const frameworkFeatures = [
+  'Pytorch',
+  'TensorFlow',
+  'Spark',
+  'JavaFX',
+  'React',
+  'Next.js',
+  'Tailwind CSS',
+  'GraphQL',
+  'Pandas',
+  'Numpy',
+  'Scikit-learn',
+  'AWS',
+  'Flask',
+  'HuggingFace',
+  'PEFT',
+];
+
+export const dictionaryFeatures = [...languageFeatures, ...frameworkFeatures];
+
+/** stable SAE-style feature index derived from the skill name */
+export function featureId(name: string): string {
+  let h = 0;
+  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 4096;
+  return `f#${String(h).padStart(4, '0')}`;
+}
+
+/** deterministic per-feature attribution for a unit: which technologies
+    drive its activation, scaled so the top feature reads the unit's own
+    activation (ablated units correctly attribute 0 everywhere) */
+export function featureAttribution(
+  node: ProbeNodeData
+): { name: string; value: number }[] {
+  const techs = node.technologies ?? [];
+  if (techs.length === 0) return [];
+  const raw = techs.map((t) => {
+    let h = 0;
+    for (const ch of t + node.id) h = (h * 31 + ch.charCodeAt(0)) % 997;
+    return { name: t, value: 0.35 + 0.65 * (h / 997) };
+  });
+  const max = Math.max(...raw.map((r) => r.value));
+  return raw
+    .map((r) => ({ name: r.name, value: (r.value / max) * node.activation }))
+    .sort((a, b) => b.value - a.value);
+}
+
+/* ---- publications: saved checkpoints of the research track ------------- */
+export interface PublicationVenue {
+  name: string;
+  /** how it appeared there */
+  detail: 'oral' | 'poster' | 'thesis';
+}
+
+export interface Publication {
+  id: string;
+  title: string;
+  authors: string[];
+  venues: PublicationVenue[];
+  year: string;
+  summary: string;
+  links: ProbeLink[];
+}
+
+export const publications: Publication[] = [
+  {
+    id: 'pub-lora-spurious-tokens',
+    title:
+      'LoRA Users Beware: A Few Spurious Tokens Can Manipulate Your Finetuned Model',
+    authors: [
+      'Marcel Mateos Salles',
+      'Praney Goyal',
+      'Pradyut Sekhsaria',
+      'Hai Huang',
+      'Randall Balestriero',
+    ],
+    venues: [
+      { name: 'NeurIPS 2025 workshop', detail: 'poster' },
+      { name: 'ICLR 2026 workshop', detail: 'oral' },
+    ],
+    year: '2025',
+    summary:
+      'Shows that a handful of spurious tokens in finetuning data is enough to steer the behavior of LoRA-finetuned language models.',
+    links: [{ label: 'arXiv', href: 'https://arxiv.org/abs/2506.11402' }],
+  },
+  {
+    id: 'pub-honors-thesis',
+    title:
+      'When Efficiency Enables Shortcuts: Studying Spurious Correlations Under LoRA Finetuning',
+    authors: ['Marcel Mateos Salles'],
+    venues: [{ name: 'Brown University honors thesis', detail: 'thesis' }],
+    year: '2026',
+    summary:
+      'Investigates when and why parameter-efficient finetuning amplifies reliance on spurious correlations, and what that means for safe deployment.',
+    links: [{ label: 'PDF', href: '/Marcel_Mateos_Salles_Thesis.pdf' }],
+  },
+];
+
 /** find a unit across both layers by exact id, then label/title substring */
 export function resolveUnit(query: string): ProbeNodeData | null {
   const q = query.toLowerCase().trim();

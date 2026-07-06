@@ -11,14 +11,23 @@ export default function Footer() {
 
   return (
     <footer className="py-8 text-center border-t border-white/5">
-      <button
-        type="button"
-        onClick={runBackprop}
-        title="Propagate gradients back to the input layer"
-        className="font-mono text-xs text-rose-400/80 hover:text-rose-300 hover:drop-shadow-[0_0_8px_rgba(244,63,94,0.7)] transition-all cursor-pointer mb-3"
-      >
-        {'∇ run_backprop()'}
-      </button>
+      <div className="flex items-center justify-center gap-6 mb-3">
+        <button
+          type="button"
+          onClick={runBackprop}
+          title="Propagate gradients back to the input layer"
+          className="font-mono text-xs text-rose-400/80 hover:text-rose-300 hover:drop-shadow-[0_0_8px_rgba(244,63,94,0.7)] transition-all cursor-pointer"
+        >
+          {'∇ run_backprop()'}
+        </button>
+        <a
+          href="/model-card"
+          title="The static, printable readout of this network"
+          className="font-mono text-xs text-cyan-400/80 hover:text-cyan-300 hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.7)] transition-all"
+        >
+          {'model_card.md →'}
+        </a>
+      </div>
       <p className="text-sm text-slate-400">
         © {new Date().getFullYear()} Marcel Mateos Salles. All rights reserved.
       </p>

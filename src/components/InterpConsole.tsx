@@ -16,7 +16,9 @@ const HELP = [
   'filter <skill>   toggle a feature filter (e.g. filter python)',
   'steer <0..2>     set the steering coefficient α',
   'clear            clear the feature filter',
+  'run              execute a guided forward pass through every layer',
   'backprop         propagate gradients back to the input layer',
+  'card             open the model card (/model-card)',
   'close            close this console (or press esc)',
 ];
 
@@ -117,6 +119,16 @@ export default function InterpConsole() {
         print(`steering coefficient α = ${clamped.toFixed(1)}`);
         break;
       }
+      case 'run':
+      case 'forward':
+        print('▶ running forward pass…');
+        window.dispatchEvent(new Event('interp:run'));
+        setOpen(false);
+        break;
+      case 'card':
+        print('loading model card…');
+        window.location.href = '/model-card';
+        break;
       case 'backprop':
         if (window.scrollY < 4) return print('already at the input layer', 'err');
         document.documentElement.classList.add('backward-pass');

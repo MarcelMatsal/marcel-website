@@ -200,6 +200,16 @@ export default function HomeAndAboutSection() {
           and an incoming Software Engineer at{' '}
           <span className="text-cyan-400 font-bold">Pinterest!</span>
         </p>
+
+        {/* guided tour: execute the whole site as one forward pass */}
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new Event('interp:run'))}
+          title="Watch the network run — a guided pass through every layer"
+          className="mt-6 inline-flex items-center gap-2 font-mono text-xs tracking-[0.15em] px-4 py-2 rounded-full border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400/70 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all cursor-pointer"
+        >
+          {'▶ run_forward_pass()'}
+        </button>
       </motion.div>
 
       {/* Down Arrow Button */}

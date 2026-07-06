@@ -3,7 +3,14 @@
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { KIND_COLORS, hexToRgba, type ProbeNodeData } from '@/lib/probeData';
+import {
+  KIND_COLORS,
+  hexToRgba,
+  featureAttribution,
+  featureId,
+  dictionaryFeatures,
+  type ProbeNodeData,
+} from '@/lib/probeData';
 
 interface ProbePanelProps {
   node: ProbeNodeData;
@@ -230,19 +237,75 @@ export default function ProbePanel({
               </div>
             )}
 
-            {/* technologies */}
+            {/* feature attribution: which dictionary features drive this unit */}
             {node.technologies && node.technologies.length > 0 && (
               <div className="mb-6">
-                <ProbeLabel>Connected Features</ProbeLabel>
-                <div className="flex flex-wrap gap-2">
-                  {node.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="font-mono text-xs px-3 py-1 rounded-full border border-cyan-500/25 bg-cyan-500/5 text-cyan-200 whitespace-nowrap"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+                <ProbeLabel>Feature Attribution</ProbeLabel>
+                <p className="font-mono text-[11px] text-slate-500 mb-3">
+                  ∂ unit / ∂ feature — dictionary features link back to the
+                  feature dictionary
+                </p>
+                <div className="space-y-1">
+                  {featureAttribution(node).map(({ name, value }) => {
+                    const inDictionary = dictionaryFeatures.includes(name);
+                    const row = (
+                      <>
+                        <span className="font-mono text-[10px] text-violet-400 w-14 shrink-0">
+                          {featureId(name)}
+                        </span>
+                        <span className="text-sm text-slate-300 w-28 sm:w-36 truncate shrink-0 text-left">
+                          {name}
+                        </span>
+                        <span className="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                          <motion.span
+                            className="block h-full rounded-full"
+                            style={{
+                              background: `linear-gradient(to right, ${c1}, ${c2})`,
+                            }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${value * 100}%` }}
+                            transition={{ duration: 0.6, ease: 'easeOut' }}
+                          />
+                        </span>
+                        <span className="font-mono text-xs text-cyan-300 w-10 text-right shrink-0">
+                          {value.toFixed(2)}
+                        </span>
+                        {inDictionary && (
+                          <span className="font-mono text-[10px] text-slate-500 group-hover/attr:text-cyan-300 transition-colors shrink-0">
+                            →
+                          </span>
+                        )}
+                      </>
+                    );
+                    return inDictionary ? (
+                      <button
+                        key={name}
+                        type="button"
+                        title={`Inspect ${name} in the feature dictionary`}
+                        onClick={() => {
+                          onClose();
+                          // let the modal exit before scrolling to the chip
+                          setTimeout(() => {
+                            window.dispatchEvent(
+                              new CustomEvent('interp:feature', {
+                                detail: { skill: name },
+                              })
+                            );
+                          }, 350);
+                        }}
+                        className="group/attr flex items-center gap-2 w-full px-2 py-1 -mx-2 rounded hover:bg-white/5 transition-colors cursor-pointer"
+                      >
+                        {row}
+                      </button>
+                    ) : (
+                      <div
+                        key={name}
+                        className="flex items-center gap-2 w-full px-2 py-1 -mx-2"
+                      >
+                        {row}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

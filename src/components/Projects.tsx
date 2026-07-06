@@ -57,6 +57,9 @@ export default function Projects({
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [ablated, setAblated] = useState<string[]>([]);
   const [edgeType, setEdgeType] = useState<'tech' | 'people'>('tech');
+  /** index currently lit by the inference-run activation wave */
+  const [waveIndex, setWaveIndex] = useState<number | null>(null);
+  const waveTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const webRef = useRef<HTMLDivElement>(null);
 
   const toggleAblate = (id: string) =>
@@ -86,6 +89,30 @@ export default function Projects({
     return () => {
       window.removeEventListener('interp:probe', onProbe);
       window.removeEventListener('interp:ablate', onAblate);
+    };
+  }, []);
+
+  // inference run: ping each unit left to right
+  useEffect(() => {
+    const onWave = (e: Event) => {
+      if ((e as CustomEvent).detail?.layer !== 'projects') return;
+      if (waveTimer.current) clearInterval(waveTimer.current);
+      let i = 0;
+      setWaveIndex(i);
+      waveTimer.current = setInterval(() => {
+        i += 1;
+        if (i >= projectNodes.length) {
+          if (waveTimer.current) clearInterval(waveTimer.current);
+          setWaveIndex(null);
+        } else {
+          setWaveIndex(i);
+        }
+      }, 200);
+    };
+    window.addEventListener('interp:wave', onWave);
+    return () => {
+      window.removeEventListener('interp:wave', onWave);
+      if (waveTimer.current) clearInterval(waveTimer.current);
     };
   }, []);
 
@@ -128,7 +155,7 @@ export default function Projects({
   };
 
   return (
-    <section id="projects" className="relative py-20 px-6 sm:px-12 overflow-hidden">
+    <section id="projects" className="relative py-14 px-6 sm:px-12 overflow-hidden">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(6,182,212,0.06),transparent_65%)]" />
 
       <div className="relative max-w-5xl mx-auto">
@@ -156,7 +183,7 @@ export default function Projects({
         </p>
 
         {/* edge-type toggle */}
-        <div className="relative z-10 flex items-center justify-center gap-2 font-mono text-[11px] tracking-[0.2em] text-slate-400 mb-12">
+        <div className="relative z-10 flex items-center justify-center gap-2 font-mono text-[11px] tracking-[0.2em] text-slate-400 mb-8">
           <span>wired by:</span>
           {(['tech', 'people'] as const).map((t) => (
             <button
@@ -203,7 +230,7 @@ export default function Projects({
                   data={node}
                   index={index}
                   dimmed={!active}
-                  pinged={pinged && active}
+                  pinged={(pinged && active) || waveIndex === index}
                   ablated={ablated.includes(node.id)}
                   onHoverChange={(h) => setHoverId(h && active ? node.id : null)}
                   onClick={() => active && setOpenIndex(index)}

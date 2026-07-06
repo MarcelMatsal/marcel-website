@@ -15,7 +15,7 @@ export default function SectionHeading({ overline, title, sub }: SectionHeadingP
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5 }}
-      className="relative z-10 text-center mb-12"
+      className="relative z-10 text-center mb-8"
     >
       <p className="font-mono text-xs text-cyan-400/80 tracking-[0.35em] uppercase mb-2">
         {overline}

@@ -60,7 +60,11 @@ export default function RootLayout({
           `}
         </Script>
       </head>
+      {/* browser extensions (Grammarly, PerkSpot, …) inject classes into
+          <body> before hydration; suppress the resulting false-positive
+          mismatch warning — this only applies one level deep */}
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}

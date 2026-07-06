@@ -7,6 +7,7 @@ import NeuronNode from './NeuronNode';
 import ProbePanel from './ProbePanel';
 import SectionHeading from './SectionHeading';
 import SynapseWeb from './SynapseWeb';
+import Publications from './Publications';
 
 const LEGEND: NodeKind[] = ['research', 'education', 'engineering', 'teaching'];
 
@@ -16,6 +17,9 @@ export default function TimelineSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [ablated, setAblated] = useState<string[]>([]);
+  /** index currently lit by the inference-run activation wave */
+  const [waveIndex, setWaveIndex] = useState<number | null>(null);
+  const waveTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const webRef = useRef<HTMLDivElement>(null);
 
   const toggleAblate = (id: string) =>
@@ -48,8 +52,32 @@ export default function TimelineSection() {
     };
   }, []);
 
+  // inference run: ping each unit in temporal order, t-8 → t-0
+  useEffect(() => {
+    const onWave = (e: Event) => {
+      if ((e as CustomEvent).detail?.layer !== 'experience') return;
+      if (waveTimer.current) clearInterval(waveTimer.current);
+      let i = experienceNodes.length - 1;
+      setWaveIndex(i);
+      waveTimer.current = setInterval(() => {
+        i -= 1;
+        if (i < 0) {
+          if (waveTimer.current) clearInterval(waveTimer.current);
+          setWaveIndex(null);
+        } else {
+          setWaveIndex(i);
+        }
+      }, 200);
+    };
+    window.addEventListener('interp:wave', onWave);
+    return () => {
+      window.removeEventListener('interp:wave', onWave);
+      if (waveTimer.current) clearInterval(waveTimer.current);
+    };
+  }, []);
+
   return (
-    <section id="experience" className="relative py-20 px-6 sm:px-12 overflow-hidden">
+    <section id="experience" className="relative py-14 px-6 sm:px-12 overflow-hidden">
       {/* faint vignette */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(124,58,237,0.06),transparent_65%)]" />
 
@@ -80,7 +108,7 @@ export default function TimelineSection() {
         </div>
 
         {/* temporal axis note */}
-        <p className="relative z-10 text-center font-mono text-[11px] text-slate-400 tracking-[0.2em] mb-12">
+        <p className="relative z-10 text-center font-mono text-[11px] text-slate-400 tracking-[0.2em] mb-8">
           signal flows t-{experienceNodes.length - 1} (past) ⟶ t-0 (now)
         </p>
 
@@ -99,6 +127,7 @@ export default function TimelineSection() {
                 data={node}
                 index={index}
                 timeLabel={`t-${index}`}
+                pinged={waveIndex === index}
                 ablated={ablated.includes(node.id)}
                 onHoverChange={(h) => setHoverId(h ? node.id : null)}
                 onClick={() => setOpenIndex(index)}
@@ -106,6 +135,9 @@ export default function TimelineSection() {
             ))}
           </div>
         </div>
+
+        {/* papers as saved checkpoints, right below the units that wrote them */}
+        <Publications />
       </div>
 
       <AnimatePresence>

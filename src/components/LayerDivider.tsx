@@ -1,5 +1,14 @@
 'use client';
 
+/* shared geometry contract: SynapseWeb stubs and FeatureFlow trunks terminate
+   exactly on these ports, so keep them in sync with the band markup below.
+   Terminal x-positions are percentages of the full-bleed band width. */
+export const DIVIDER_FEW = [38, 50, 62];
+export const DIVIDER_MANY = [8, 20, 32, 44, 56, 68, 80, 92];
+/* half the band height: h-28 (112px) with -my-14 tucks 56px into each
+   neighboring section, so the band's terminal rows sit 56px inside them */
+export const DIVIDER_HALF = 56;
+
 /**
  * Fully-connected "weight matrix" band drawn between two sections: a few
  * points on one edge fan out to many on the other, like the edges between
@@ -12,8 +21,8 @@ export default function LayerDivider({
 }: {
   direction?: 'expand' | 'contract';
 }) {
-  const few = [38, 50, 62];
-  const many = [8, 20, 32, 44, 56, 68, 80, 92];
+  const few = DIVIDER_FEW;
+  const many = DIVIDER_MANY;
   const top = direction === 'expand' ? few : many;
   const bottom = direction === 'expand' ? many : few;
 

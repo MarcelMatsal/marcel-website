@@ -11,6 +11,7 @@ import TimelineSection from '@/components/ExperienceTimeline';
 import LayerDivider from '@/components/LayerDivider';
 import ResidualStream from '@/components/ResidualStream';
 import InterpConsole from '@/components/InterpConsole';
+import InferenceRun from '@/components/InferenceRun';
 import { resolveUnit } from '@/lib/probeData';
 
 export default function Home() {
@@ -50,6 +51,8 @@ export default function Home() {
       <ResidualStream />
       {/* hidden console (press ` / ~) driving probe/ablate/filter/steer/backprop */}
       <InterpConsole />
+      {/* guided forward pass triggered from the hero button or `run` */}
+      <InferenceRun />
       <main className="pt-[64px]"> {/* Adjust padding for fixed Navbar */}
         <HomeAndAboutSection />
         <LayerDivider direction="expand" />

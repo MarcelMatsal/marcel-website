@@ -5,7 +5,12 @@ import { FaJava, FaPython, FaReact, FaCss3, FaHtml5 } from 'react-icons/fa'; // 
 import { SiTypescript, SiJavascript, SiR, SiNextdotjs, SiTensorflow, SiTailwindcss, SiPytorch, SiApachespark, SiGraphql } from 'react-icons/si';
 import SectionHeading from './SectionHeading';
 import FeatureFlow from './FeatureFlow';
-import { projectNodes } from '@/lib/probeData';
+import {
+  projectNodes,
+  featureId,
+  languageFeatures,
+  frameworkFeatures,
+} from '@/lib/probeData';
 
 interface SkillsProps {
   onSkillSelect: (selectedSkills: string[]) => void;
@@ -14,13 +19,6 @@ interface SkillsProps {
   /** steering coefficient α — how hard selected features drive layer_02 */
   steering?: number;
   onSteeringChange?: (value: number) => void;
-}
-
-/** stable SAE-style feature index derived from the skill name */
-function featureId(name: string): string {
-  let h = 0;
-  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 4096;
-  return `f#${String(h).padStart(4, '0')}`;
 }
 
 /** top project units this feature fires on, by activation */
@@ -32,6 +30,32 @@ function topActivations(name: string) {
     .slice(0, 3);
 }
 
+/* icons for the canonical feature names living in probeData */
+const SKILL_ICONS: Record<string, React.ReactNode> = {
+  Java: <FaJava />,
+  Python: <FaPython />,
+  TypeScript: <SiTypescript />,
+  JavaScript: <SiJavascript />,
+  R: <SiR />,
+  CSS: <FaCss3 />,
+  HTML: <FaHtml5 />,
+  Pytorch: <SiPytorch />,
+  TensorFlow: <SiTensorflow />,
+  Spark: <SiApachespark />,
+  JavaFX: <FaJava />, // Using Java icon as fallback since JavaFX is Java-based
+  React: <FaReact />,
+  'Next.js': <SiNextdotjs />,
+  'Tailwind CSS': <SiTailwindcss />,
+  GraphQL: <SiGraphql />,
+  Pandas: <FaPython />,
+  Numpy: <FaPython />,
+  'Scikit-learn': <FaPython />,
+  AWS: <FaPython />,
+  Flask: <FaPython />,
+  HuggingFace: <FaPython />,
+  PEFT: <FaPython />,
+};
+
 export default function Skills({
   onSkillSelect,
   onSkillHover,
@@ -42,6 +66,16 @@ export default function Skills({
   const tooltipRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  /** chip briefly highlighted after a probe-panel attribution row points here */
+  const [pingedChip, setPingedChip] = useState<string | null>(null);
+  /** feature card held open by tap (touch devices have no hover) */
+  const [openCard, setOpenCard] = useState<string | null>(null);
+  const [touchMode, setTouchMode] = useState(false);
+  const pingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    setTouchMode(window.matchMedia('(hover: none)').matches);
+  }, []);
 
   // Show tooltip when component mounts if not shown in this session
   useEffect(() => {
@@ -94,7 +128,7 @@ export default function Skills({
         localStorage.setItem('selectedSkills', JSON.stringify([]));
         return;
       }
-      const all = [...programmingLanguages, ...frameworks].map((s) => s.name);
+      const all = [...languageFeatures, ...frameworkFeatures];
       const match = all.find((n) => n.toLowerCase() === String(skill).toLowerCase());
       if (match) handleSkillClick(match);
     };
@@ -102,6 +136,40 @@ export default function Skills({
     return () => window.removeEventListener('interp:filter', onFilter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSkills]);
+
+  // probe-panel attribution rows point back here: scroll to the chip and ping it
+  useEffect(() => {
+    const onFeature = (e: Event) => {
+      const skill = (e as CustomEvent).detail?.skill;
+      const all = [...languageFeatures, ...frameworkFeatures];
+      const match = all.find((n) => n.toLowerCase() === String(skill).toLowerCase());
+      if (!match) return;
+      document
+        .querySelector(`[data-skill-chip="${match}"]`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (pingTimer.current) clearTimeout(pingTimer.current);
+      setPingedChip(match);
+      pingTimer.current = setTimeout(() => setPingedChip(null), 2600);
+    };
+    window.addEventListener('interp:feature', onFeature);
+    return () => {
+      window.removeEventListener('interp:feature', onFeature);
+      if (pingTimer.current) clearTimeout(pingTimer.current);
+    };
+  }, []);
+
+  // a tap outside the open feature card closes it
+  useEffect(() => {
+    if (!openCard) return;
+    const onPointerDown = (e: PointerEvent) => {
+      const wrap = (e.target as HTMLElement).closest('[data-chip-wrap]');
+      if (!wrap || wrap.getAttribute('data-chip-wrap') !== openCard) {
+        setOpenCard(null);
+      }
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [openCard]);
 
   const handleSkillClick = (skillName: string) => {
     const isSelected = selectedSkills.includes(skillName);
@@ -119,101 +187,127 @@ export default function Skills({
     }
   };
 
-  const programmingLanguages = [
-    { name: 'Java', icon: <FaJava /> },
-    { name: 'Python', icon: <FaPython /> },
-    { name: 'TypeScript', icon: <SiTypescript /> },
-    { name: 'JavaScript', icon: <SiJavascript /> },
-    { name: 'R', icon: <SiR /> },
-    { name: 'CSS', icon: <FaCss3 /> },
-    { name: 'HTML', icon: <FaHtml5 /> }
-  ];
+  const programmingLanguages = languageFeatures.map((name) => ({
+    name,
+    icon: SKILL_ICONS[name],
+  }));
 
-  const frameworks = [
-    { name: 'Pytorch', icon: <SiPytorch /> },
-    { name: 'TensorFlow', icon: <SiTensorflow /> },
-    { name: 'Spark', icon: <SiApachespark /> },
-    { name: 'JavaFX', icon: <FaJava /> }, // Using Java icon as fallback since JavaFX is Java-based
-    { name: 'React', icon: <FaReact /> },
-    { name: 'Next.js', icon: <SiNextdotjs /> },
-    { name: 'Tailwind CSS', icon: <SiTailwindcss /> },
-    { name: 'GraphQL', icon: <SiGraphql /> },
-    { name: 'Pandas', icon: <FaPython /> },
-    { name: 'Numpy', icon: <FaPython /> },
-    { name: 'Scikit-learn', icon: <FaPython /> },
-    { name: 'AWS', icon: <FaPython /> },
-    { name: 'Flask', icon: <FaPython /> },
-    { name: 'HuggingFace', icon: <FaPython /> },
-    { name: 'PEFT', icon: <FaPython /> },
-  ];
+  const frameworks = frameworkFeatures.map((name) => ({
+    name,
+    icon: SKILL_ICONS[name],
+  }));
 
   const renderChip = ({ name, icon }: { name: string; icon: React.ReactNode }) => {
     const isSelected = selectedSkills.includes(name);
+    const isPinged = pingedChip === name;
+    const isOpen = openCard === name;
     const tops = topActivations(name);
     return (
-      <button
-        key={name}
-        type="button"
-        data-skill-chip={name}
-        className={`group relative flex items-center gap-2 pl-3 pr-4 py-2 rounded-full border font-mono text-sm cursor-pointer transition-all duration-300 ${
-          isSelected
-            ? 'border-cyan-400/60 bg-cyan-500/10 text-cyan-200 shadow-[0_0_18px_rgba(6,182,212,0.35)] scale-[1.04]'
-            : 'border-white/10 bg-white/[0.02] text-slate-300 hover:border-violet-500/50 hover:text-violet-200 hover:shadow-[0_0_14px_rgba(124,58,237,0.3)] hover:scale-[1.04]'
-        }`}
-        onClick={() => handleSkillClick(name)}
-        onMouseEnter={() => onSkillHover?.(name)}
-        onMouseLeave={() => onSkillHover?.(null)}
-        onFocus={() => onSkillHover?.(name)}
-        onBlur={() => onSkillHover?.(null)}
-      >
-        {/* feature status dot */}
-        <span
-          className={`w-1.5 h-1.5 rounded-full transition-colors ${
+      <div key={name} data-chip-wrap={name} className="group relative">
+        <button
+          type="button"
+          data-skill-chip={name}
+          className={`relative flex items-center gap-2 pl-3 pr-4 py-2 rounded-full border font-mono text-sm cursor-pointer transition-all duration-300 ${
             isSelected
-              ? 'bg-cyan-300 shadow-[0_0_6px_rgba(6,182,212,0.9)]'
-              : 'bg-slate-600 group-hover:bg-violet-400'
+              ? 'border-cyan-400/60 bg-cyan-500/10 text-cyan-200 shadow-[0_0_18px_rgba(6,182,212,0.35)] scale-[1.04]'
+              : 'border-white/10 bg-white/[0.02] text-slate-300 hover:border-violet-500/50 hover:text-violet-200 hover:shadow-[0_0_14px_rgba(124,58,237,0.3)] hover:scale-[1.04]'
+          } ${
+            isPinged
+              ? 'ring-2 ring-cyan-300/80 shadow-[0_0_26px_rgba(6,182,212,0.6)]'
+              : ''
           }`}
-        />
-        {icon}
-        <span>{name}</span>
-        <span className="text-[10px] text-slate-400/80">{featureId(name)}</span>
+          onClick={() => {
+            // touch: first tap opens the feature card, second tap selects
+            if (touchMode && !isOpen) {
+              setOpenCard(name);
+              return;
+            }
+            setOpenCard(null);
+            handleSkillClick(name);
+          }}
+          onMouseEnter={() => onSkillHover?.(name)}
+          onMouseLeave={() => onSkillHover?.(null)}
+          onFocus={() => onSkillHover?.(name)}
+          onBlur={() => onSkillHover?.(null)}
+        >
+          {/* feature status dot */}
+          <span
+            className={`w-1.5 h-1.5 rounded-full transition-colors ${
+              isSelected
+                ? 'bg-cyan-300 shadow-[0_0_6px_rgba(6,182,212,0.9)]'
+                : 'bg-slate-600 group-hover:bg-violet-400'
+            }`}
+          />
+          {icon}
+          <span>{name}</span>
+          <span className="text-[10px] text-slate-400/80">{featureId(name)}</span>
+        </button>
 
-        {/* feature card, SAE-dashboard style */}
-        <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 hidden group-hover:flex group-focus-visible:flex flex-col gap-1.5 w-60 p-3 rounded-lg border border-cyan-500/25 bg-[#0b0b1c] shadow-[0_0_20px_rgba(6,182,212,0.15)] text-left normal-case">
-          <span className="text-[10px] tracking-[0.2em] text-cyan-400/90 uppercase">
-            {featureId(name)} · {name.toLowerCase()}
-          </span>
-          {tops.length > 0 ? (
-            <>
-              <span className="text-[10px] text-slate-400 tracking-wider uppercase">
-                top activating units
-              </span>
-              {tops.map(({ node, i }) => (
-                <span key={node.id} className="flex items-center gap-2 text-[11px] text-slate-300">
-                  <span className="text-violet-400 shrink-0">u{String(i).padStart(2, '0')}</span>
-                  <span className="truncate flex-1">{node.label}</span>
-                  <span className="flex-none w-10 h-1 rounded-full bg-white/10 overflow-hidden">
-                    <span
-                      className="block h-full rounded-full bg-gradient-to-r from-[#7c3aed] to-[#06b6d4]"
-                      style={{ width: `${node.activation * 100}%` }}
-                    />
-                  </span>
-                  <span className="text-cyan-300">{node.activation.toFixed(2)}</span>
-                </span>
-              ))}
-            </>
-          ) : (
-            <span className="text-[11px] text-slate-400">
-              no project units activate on this feature — yet
+        {/* feature card, SAE-dashboard style — pb bridges the gap so the
+            pointer can travel from chip to card without losing hover */}
+        <div
+          className={`absolute bottom-full left-1/2 -translate-x-1/2 pb-2 z-50 ${
+            isOpen ? 'flex' : 'hidden group-hover:flex group-focus-within:flex'
+          }`}
+        >
+          <div className="flex flex-col gap-1.5 w-60 p-3 rounded-lg border border-cyan-500/25 bg-[#0b0b1c] shadow-[0_0_20px_rgba(6,182,212,0.15)] text-left normal-case">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-cyan-400/90 uppercase">
+              {featureId(name)} · {name.toLowerCase()}
             </span>
-          )}
-        </span>
-      </button>
+            {tops.length > 0 ? (
+              <>
+                <span className="font-mono text-[10px] text-slate-400 tracking-wider uppercase">
+                  top activating units
+                </span>
+                {tops.map(({ node, i }) => (
+                  <button
+                    key={node.id}
+                    type="button"
+                    title={`Open the neuron probe for ${node.label}`}
+                    onClick={() => {
+                      setOpenCard(null);
+                      window.dispatchEvent(
+                        new CustomEvent('interp:probe', {
+                          detail: { id: node.id },
+                        })
+                      );
+                    }}
+                    className="flex items-center gap-2 font-mono text-[11px] text-slate-300 px-1 py-0.5 -mx-1 rounded hover:bg-white/5 hover:text-cyan-200 transition-colors cursor-pointer"
+                  >
+                    <span className="text-violet-400 shrink-0">
+                      u{String(i).padStart(2, '0')}
+                    </span>
+                    <span className="truncate flex-1 text-left">{node.label}</span>
+                    <span className="flex-none w-10 h-1 rounded-full bg-white/10 overflow-hidden">
+                      <span
+                        className="block h-full rounded-full bg-gradient-to-r from-[#7c3aed] to-[#06b6d4]"
+                        style={{ width: `${node.activation * 100}%` }}
+                      />
+                    </span>
+                    <span className="text-cyan-300">
+                      {node.activation.toFixed(2)}
+                    </span>
+                  </button>
+                ))}
+              </>
+            ) : (
+              <span className="font-mono text-[11px] text-slate-400">
+                no project units activate on this feature — yet
+              </span>
+            )}
+            {touchMode && (
+              <span className="font-mono text-[10px] text-slate-500">
+                tap the chip again to toggle the filter
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
     );
   };
 
   return (
-    <section ref={sectionRef} id="skills" className="relative py-20 px-6 sm:px-12 overflow-hidden">
+    <section ref={sectionRef} id="skills" className="relative py-14 px-6 sm:px-12 overflow-hidden">
       {/* signal lines flowing through the dictionary, plus feed lines from
           selected features toward the projects layer */}
       <FeatureFlow sectionRef={sectionRef} selected={selectedSkills} />
@@ -276,7 +370,7 @@ export default function Skills({
         </div>
 
         {/* dictionary readout + steering control */}
-        <p className="relative font-mono text-[11px] text-slate-400 tracking-[0.2em] text-center mt-10">
+        <p className="relative font-mono text-[11px] text-slate-400 tracking-[0.2em] text-center mt-8">
           {selectedSkills.length > 0
             ? `${selectedSkills.length} feature${selectedSkills.length > 1 ? 's' : ''} feeding layer_02 ↓`
             : `${programmingLanguages.length + frameworks.length} features idle — select to feed layer_02`}

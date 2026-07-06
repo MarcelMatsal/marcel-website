@@ -5,7 +5,7 @@ import LossCurve from './LossCurve';
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-20 px-6">
+    <section id="contact" className="py-16 px-6">
       <div className="max-w-xl mx-auto">
         <SectionHeading overline="// output_layer" title="Get in Touch" />
         {/* gradient descent finale: loss bottoms out right where the CTA is */}
