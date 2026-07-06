@@ -1,271 +1,234 @@
-"use client";
+'use client';
 
-import ProjectCard from "./ProjectCard";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { projectNodes } from '@/lib/probeData';
+import NeuronNode from './NeuronNode';
+import ProbePanel from './ProbePanel';
+import SectionHeading from './SectionHeading';
+import SynapseWeb, { type WeightedLink } from './SynapseWeb';
 
 interface ProjectsProps {
   selectedSkills: string[];
+  /** skill currently hovered in the dictionary; connected units light up */
+  hoveredSkill?: string | null;
+  /** steering coefficient α — scales how hard selected skills drive units */
+  steering?: number;
 }
 
-export default function Projects({ selectedSkills }: ProjectsProps) {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+const nodeIds = projectNodes.map((n) => n.id);
 
-  // Add keyboard navigation
+/* connect projects that share technologies; weight grows with overlap */
+const techLinks: WeightedLink[] = [];
+/* and projects that share collaborators — the other kind of wiring */
+const peopleLinks: WeightedLink[] = [];
+for (let i = 0; i < projectNodes.length; i++) {
+  for (let j = i + 1; j < projectNodes.length; j++) {
+    const sharedTech = (projectNodes[i].technologies ?? []).filter((tech) =>
+      projectNodes[j].technologies?.includes(tech)
+    ).length;
+    if (sharedTech > 0) {
+      techLinks.push({
+        a: projectNodes[i].id,
+        b: projectNodes[j].id,
+        w: Math.min(1, sharedTech / 4),
+      });
+    }
+    const names = (projectNodes[i].collaborators ?? []).map((c) => c.name);
+    const sharedPeople = (projectNodes[j].collaborators ?? []).filter((c) =>
+      names.includes(c.name)
+    ).length;
+    if (sharedPeople > 0) {
+      peopleLinks.push({
+        a: projectNodes[i].id,
+        b: projectNodes[j].id,
+        w: Math.min(1, sharedPeople / 3),
+      });
+    }
+  }
+}
+
+export default function Projects({
+  selectedSkills,
+  hoveredSkill,
+  steering = 1,
+}: ProjectsProps) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [hoverId, setHoverId] = useState<string | null>(null);
+  const [ablated, setAblated] = useState<string[]>([]);
+  const [edgeType, setEdgeType] = useState<'tech' | 'people'>('tech');
+  const webRef = useRef<HTMLDivElement>(null);
+
+  const toggleAblate = (id: string) =>
+    setAblated((prev) =>
+      prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]
+    );
+
+  // interpretability console commands targeting this layer
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (expandedIndex === null) return;
-
-      switch (e.key) {
-        case "ArrowRight":
-          handleNext();
-          break;
-        case "ArrowLeft":
-          handlePrevious();
-          break;
-        case "Escape":
-          setExpandedIndex(null);
-          break;
-        default:
-          break;
+    const onProbe = (e: Event) => {
+      const id = (e as CustomEvent).detail?.id as string;
+      const i = projectNodes.findIndex((n) => n.id === id);
+      if (i >= 0) {
+        document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+        setOpenIndex(i);
       }
     };
+    const onAblate = (e: Event) => {
+      const { id, action } = (e as CustomEvent).detail ?? {};
+      if (!projectNodes.some((n) => n.id === id)) return;
+      setAblated((prev) =>
+        action === 'restore' ? prev.filter((a) => a !== id) : [...new Set([...prev, id])]
+      );
+    };
+    window.addEventListener('interp:probe', onProbe);
+    window.addEventListener('interp:ablate', onAblate);
+    return () => {
+      window.removeEventListener('interp:probe', onProbe);
+      window.removeEventListener('interp:ablate', onAblate);
+    };
+  }, []);
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [expandedIndex]);
+  const matchCount = (index: number) =>
+    selectedSkills.filter((skill) =>
+      projectNodes[index].technologies?.includes(skill)
+    ).length;
 
-  const projects = [
-    {
-      title:
-        "When Efficiency Enables Shortcuts: Studying Spurious Correlations Under LoRA Finetuning",
-      description:
-        "Honors thesis investigating how LoRA finetuning can introduce and amplify spurious correlations in language models.",
-      technologies: ["Python", "Pytorch", "HuggingFace", "PEFT"],
-      longDescription:
-        "This honors thesis investigates the relationship between parameter-efficient finetuning (specifically LoRA) and spurious correlations in language models. LoRA's low-rank constraint forces models to find efficient shortcuts, which can cause them to rely on spurious features in the training data rather than the intended signal. The thesis provides empirical evidence and analysis of when and why this occurs, with implications for the safe deployment of finetuned language models.",
-      features: [
-        "Studied how LoRA's low-rank structure encourages reliance on spurious correlations during finetuning",
-        "Conducted controlled experiments across multiple datasets and model architectures",
-        "Analyzed the tradeoff between parameter efficiency and robustness to distribution shift",
-      ],
-      githubLink: undefined,
-      demoLink: "/Marcel_Mateos_Salles_Thesis.pdf",
-      imageUrl: "/thesis_image.png",
-    },
+  const matches = (index: number) =>
+    selectedSkills.length === 0 || matchCount(index) > 0;
 
-    {
-      title: "Reddit Depression Symptom Detection",
-      description:
-        "A computational linguistics project that uses Reddit data to detect symptoms of depression.",
-      technologies: [
-        "Python",
-        "Pytorch",
-        "HuggingFace",
-        "Pandas",
-        "Scikit-learn",
-      ],
-      longDescription:
-        "This project uses Reddit data to detect symptoms of depression. I used two techniques to generate embeddings from Reddit comments: averaged BERT embeddings and LDA topics. I then trained a Random Forest Classifier to detect ten different depression symptoms, achieveing accuracies close to the research paper with smaller models.",
-      features: [
-        "Generated two separate embedding representations of Reddit comments to train a Random Forest Classifier",
-        "Achieved near SOTA performance from a research paper while using a smaller BERT model (DistilBERT)",
-        "Utilized LDA topics or BERT to generate embeddings",
-      ],
-      githubLink: undefined,
-      demoLink: undefined,
-      imageUrl: "/reddit.png",
-    },
+  // selecting skills drives extra current into the matching units; the
+  // steering coefficient α scales how hard they're driven
+  const effectiveNodes = projectNodes.map((node, index) => {
+    if (ablated.includes(node.id)) return { ...node, activation: 0 };
+    const count = matchCount(index);
+    if (count === 0) return node;
+    return {
+      ...node,
+      activation: Math.min(
+        0.99,
+        node.activation + (0.06 + 0.05 * count) * steering
+      ),
+    };
+  });
 
-    {
-      title: "SpotiDuo",
-      description:
-        "A music-based language learning app featuring support for over 150 languages, user inputs, and a recommendation algorithm to continue learning",
-      technologies: [
-        "Java",
-        "TypeScript",
-        "JavaScript",
-        "React",
-        "AWS",
-        "Spark",
-      ],
-      longDescription:
-        "SpotiDuo is a full-stack web app intended to help language learners on their journey of learning and discovery. The app bridges the enjoyment of listening to music with the task of learning languages to allow for people to learn as they listen. While using the web-app, the user can listen to a song in a language that they are trying to learn, and see the lyrics come up in their native language and the language they are working on learning. Blanks will appear in the lyrics and using what they hear, know from the language that they speak, and from what they have already learned, write in what the word in the blank should be. This will allow them to work on their grammar and comprehension. After the song finishes, if the user enjoyed the song, they will have the option to play with a song that is similar to the song they just used.",
-      features: [
-        "Built a webapp that allows users to learn languages by listening to songs in other languages by filling in lyrics to reinforce listening",
-        "Led the backend team and designed architecture for interaction between frontend and backend",
-        "Utilized Spotify API to get metadata from songs and developed a recommendation algorithm to prompt users with new songs",
-      ],
-      collaborators: [
-        { name: "Allen Wang", link: "https://allenwang.co/" },
-        {
-          name: "Charlene Chen",
-          link: "https://www.linkedin.com/in/chen-charlene/",
-        },
-        {
-          name: "Andrew Chen",
-          link: "https://www.linkedin.com/in/andrew-z-chen/",
-        },
-      ],
-      githubLink: "https://github.com/MarcelMatsal/spotiduo",
-      demoLink: "https://www.youtube.com/watch?v=qPu-ch3UULo",
-      imageUrl: "/SpotiDuo.png",
-    },
-    {
-      title: "Little Label Learners",
-      description:
-        "A novel semisupervised learning technique based on biological development.",
-      technologies: ["Python", "TensorFlow", "Keras", "Numpy"],
-      longDescription:
-        "Modern neural networks often use vast volumes of data, far more than what a human needs, to learn to recognize common objects. Plus, these models often suffer from catastrophic forgetting during continual learning tasks, whereas humans can learn nearly unlimited numbers of novel conceptual classes. With Little Label Learners, we present a gradual supervised learning routine that uses increasing numbers of class-representation and labeled-data over epochs to mimic the data diet of infants. We demonstrate that our model is able to learn new classes effectively, comparable to fullysupervised routines using significantly more labeled images and datasets that contain all labels of interest.",
-      features: [
-        "Pioneered the development of a biology-mimicking deep learning model that enhances adaptability and minimizes data requirements",
-        "Implemented a seamless transition from self-supervised to semi-supervised learning, along with dynamic category introduction",
-        "Demonstrated ability to outperform purely self-supervised learning while coming within 10% of fully-supervised learning",
-      ],
-      collaborators: [
-        {
-          name: "Winston Li",
-          link: "https://www.linkedin.com/in/winston-y-li/",
-        },
-        {
-          name: "John Ryan Byers",
-          link: "https://jrbyers.github.io/Portfolio-Website/",
-        },
-      ],
-      githubLink: "https://github.com/lwinstony8/LittleLabelLearners",
-      demoLink:
-        "https://github.com/MarcelMatsal/LittleLabelLearnersWriteUpandSlides",
-      imageUrl: "/LittleLabelLearnersHeader.png",
-    },
-    {
-      title: "SpacePals",
-      description:
-        "Hack@Brown 2024 project aimed at entertaining users through a pokemon-like game of space exploration.",
-      technologies: [
-        "Python",
-        "React",
-        "CSS",
-        "Flask",
-        "GraphQL",
-        "CLIP",
-        "OpenAI",
-      ],
-      longDescription:
-        "With SpacePals you can embark on a journey to discover the cosmos! Take pictures of all the alien animlas that you find along the way, and look back at them later on in your Explorers's Guide! You can see your progress there as you progress on your journey and learn some cool information about all the animals you encounter. We used the CLIP model and gave it names of things that it should be able to recognize. We then built the frontend and connected it using GraphQl. We worked on getting the ability to take images and then have our model on the backend categorize what the image is showing. It is then update in your traveler's guide to show that you have found the alien.",
-      features: [
-        "Spearheaded development of webapp that allows users to capture different space animals by taking pictures of them",
-        "Engineered frontend system that's updated in real-time as the backend utilizes CLIP to classify the image taken",
-        "Integrated GraphQL to establish efficient communication between the frontend and backend systems",
-      ],
-      collaborators: [
-        {
-          name: "John Ryan Byers",
-          link: "https://jrbyers.github.io/Portfolio-Website/",
-        },
-        { name: "Nathan DePiero", link: "https://nathandepiero.vercel.app/" },
-        {
-          name: "Marcus Lee",
-          link: "https://www.linkedin.com/in/lee-marcus-j/",
-        },
-      ],
-      githubLink: "https://github.com/jrbyers/SpacePals",
-      demoLink: "https://devpost.com/software/spacepals",
-      imageUrl: "/spacepals.png",
-    },
-    {
-      title: "Campfire Stories",
-      description:
-        "Hack@Brown 2023 project aimed at improving camping safety through storytelling.",
-      technologies: [
-        "Python",
-        "JavaScript",
-        "React",
-        "CSS",
-        "Azure",
-        "OpenAI",
-        "text-davinci-003",
-      ],
-      longDescription:
-        "Our project is all about the outdoors and enjoying being around a campfire with your friends. Many things can be done around a campfire but our team agreed that one of the best things to do is tell scary stories with your friends. We used this as the inspiration for our project. Our project expands upon the idea of campfire stories and allows the user to input a theme/noun. This theme/noun will then be converted into a scary story that you can share with your friends around the campfire. Furthermore, the story that is generated by our project incorporates safety tips so that everyone that is listening to the story learns about camping safety, preventing injuries, and preventing forest fires. We built a website using React and OpenAI's API. We used their pre-trained text-davinci-003 model to generate random scary stories based on the theme/noun that the user inputs.",
-      features: [
-        "Developed a website for generating scary campfire stories based on user-inputted themes and incorporating safety tips",
-        "Implemented a seamless user interface for displaying generated stories, ensuring an immersive storytelling experience",
-        "Incorporated safety tips within the generated stories to promote camping safety, injury prevention, and wildfire awareness",
-      ],
-      collaborators: [
-        {
-          name: "John Ryan Byers",
-          link: "https://jrbyers.github.io/Portfolio-Website/",
-        },
-        { name: "Nathan DePiero", link: "https://nathandepiero.vercel.app/" },
-        {
-          name: "Marcus Lee",
-          link: "https://www.linkedin.com/in/lee-marcus-j/",
-        },
-      ],
-      githubLink: "https://github.com/jrbyers/CampfireStories",
-      demoLink: "https://devpost.com/software/campfire-stories-3j4wv6",
-      imageUrl: "/campfireStories.png",
-    },
-  ];
+  // indices of units that match the active skill filter, used for probe navigation
+  const activeIndices = projectNodes
+    .map((_, i) => i)
+    .filter((i) => matches(i));
+  const activePos = openIndex !== null ? activeIndices.indexOf(openIndex) : -1;
 
-  const filteredProjects =
+  const dimmedIds =
     selectedSkills.length > 0
-      ? projects.filter((project) =>
-          project.technologies.some((tech) => selectedSkills.includes(tech)),
-        )
-      : projects;
+      ? projectNodes.filter((_, i) => !matches(i)).map((n) => n.id)
+      : [];
 
-  const handleNext = () => {
-    if (expandedIndex !== null && expandedIndex < filteredProjects.length - 1) {
-      setExpandedIndex(expandedIndex + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (expandedIndex !== null && expandedIndex > 0) {
-      setExpandedIndex(expandedIndex - 1);
-    }
-  };
-
-  const handleExpand = (index: number, expanded: boolean) => {
-    setExpandedIndex(expanded ? index : null);
+  const goTo = (pos: number) => {
+    if (pos >= 0 && pos < activeIndices.length) setOpenIndex(activeIndices[pos]);
   };
 
   return (
-    <section id="projects" className="py-20 px-8 sm:px-20">
-      <h2 className="text-3xl font-bold mb-8 text-center">Recent Projects</h2>
-      {filteredProjects.length === 0 ? (
-        <div className="text-center text-gray-600 dark:text-gray-400 text-lg">
-          There are no current projects being featured with that selected skill
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, index) => (
-            <ProjectCard
-              key={index}
-              title={project.title}
-              description={project.description}
-              technologies={project.technologies}
-              longDescription={project.longDescription}
-              features={project.features}
-              githubLink={project.githubLink}
-              demoLink={project.demoLink}
-              imageUrl={project.imageUrl}
-              collaborators={project.collaborators}
-              onNext={handleNext}
-              onPrevious={handlePrevious}
-              hasNext={
-                expandedIndex !== null &&
-                expandedIndex < filteredProjects.length - 1
-              }
-              hasPrevious={expandedIndex !== null && expandedIndex > 0}
-              isExpanded={expandedIndex === index}
-              onExpand={(expanded) => handleExpand(index, expanded)}
-            />
+    <section id="projects" className="relative py-20 px-6 sm:px-12 overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(6,182,212,0.06),transparent_65%)]" />
+
+      <div className="relative max-w-5xl mx-auto">
+        <SectionHeading
+          overline="// layer_02 · project_units"
+          title="Recent Projects"
+          sub="Connected units share technologies or collaborators — stronger overlap, stronger connection. Click a unit to open its neuron probe."
+        />
+
+        {/* filter readout */}
+        <p className="relative z-10 text-center font-mono text-xs text-slate-400 mb-4 tracking-wider">
+          {selectedSkills.length > 0 ? (
+            <>
+              probe filter:{' '}
+              <span className="text-cyan-300">{selectedSkills.join(', ')}</span>
+              {' — '}
+              <span className="text-violet-300">
+                {activeIndices.length}/{projectNodes.length}
+              </span>{' '}
+              units active · matched activations boosted{steering !== 1 ? ` (α=${steering.toFixed(1)})` : ''}
+            </>
+          ) : (
+            <>probe filter: none — all {projectNodes.length} units active</>
+          )}
+        </p>
+
+        {/* edge-type toggle */}
+        <div className="relative z-10 flex items-center justify-center gap-2 font-mono text-[10px] tracking-[0.2em] text-slate-500 mb-12">
+          <span>wired by:</span>
+          {(['tech', 'people'] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setEdgeType(t)}
+              className={`px-2 py-0.5 rounded border transition-colors cursor-pointer ${
+                edgeType === t
+                  ? 'border-cyan-400/50 text-cyan-300 bg-cyan-500/10'
+                  : 'border-white/10 text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              {t}
+            </button>
           ))}
         </div>
-      )}
+
+        {activeIndices.length === 0 ? (
+          <p className="text-center text-slate-400 text-lg">
+            There are no current projects being featured with that selected skill
+          </p>
+        ) : null}
+
+        {/* node web: shared-technology or shared-collaborator mesh behind,
+            loose node grid on top; non-matching units stay visible but dim */}
+        <div ref={webRef} className="relative">
+          <SynapseWeb
+            containerRef={webRef}
+            orderedIds={nodeIds}
+            mode="mesh"
+            links={edgeType === 'tech' ? techLinks : peopleLinks}
+            dimmedIds={dimmedIds}
+            ablatedIds={ablated}
+            highlightId={hoverId}
+          />
+          <div className="relative flex flex-wrap justify-center gap-x-8 gap-y-14 sm:gap-x-14 pb-8">
+            {effectiveNodes.map((node, index) => {
+              const active = matches(index);
+              const pinged =
+                !!hoveredSkill && !!node.technologies?.includes(hoveredSkill);
+              return (
+                <NeuronNode
+                  key={node.id}
+                  data={node}
+                  index={index}
+                  dimmed={!active}
+                  pinged={pinged && active}
+                  ablated={ablated.includes(node.id)}
+                  onHoverChange={(h) => setHoverId(h && active ? node.id : null)}
+                  onClick={() => active && setOpenIndex(index)}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {openIndex !== null && (
+          <ProbePanel
+            node={effectiveNodes[openIndex]}
+            unitIndex={openIndex}
+            ablated={ablated.includes(projectNodes[openIndex].id)}
+            onToggleAblate={() => toggleAblate(projectNodes[openIndex].id)}
+            onClose={() => setOpenIndex(null)}
+            onNext={() => goTo(activePos + 1)}
+            onPrevious={() => goTo(activePos - 1)}
+            hasNext={activePos >= 0 && activePos < activeIndices.length - 1}
+            hasPrevious={activePos > 0}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

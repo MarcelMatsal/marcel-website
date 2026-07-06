@@ -16,8 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Marcel's Website",
-  description: "Welcome to my personal website! I'm a backend software engineer and machine learning researcher at Brown University.",
+  title: "Marcel Mateos Salles · Software Engineer & ML Researcher",
+  description:
+    "Backend software engineer and ML researcher (Brown CS-Econ). Explore my experience and projects as an interactive neural network — probe the units, steer the features.",
 };
 
 export default function RootLayout({
