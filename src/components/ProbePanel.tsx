@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { KIND_COLORS, hexToRgba, type ProbeNodeData } from '@/lib/probeData';
 
@@ -158,11 +159,12 @@ export default function ProbePanel({
           {/* image */}
           {node.imageUrl && (
             <div className="aspect-video bg-[#05050f] relative overflow-hidden border-b border-white/5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={node.imageUrl}
                 alt={node.title}
-                className="w-full h-full object-contain"
+                fill
+                sizes="(max-width: 768px) 100vw, 768px"
+                className="object-contain"
               />
             </div>
           )}

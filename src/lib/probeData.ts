@@ -51,6 +51,19 @@ export function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
 }
 
+/** find a unit across both layers by exact id, then label/title substring */
+export function resolveUnit(query: string): ProbeNodeData | null {
+  const q = query.toLowerCase().trim();
+  if (!q) return null;
+  const all = [...experienceNodes, ...projectNodes];
+  return (
+    all.find((n) => n.id === q) ??
+    all.find((n) => n.label.toLowerCase().includes(q)) ??
+    all.find((n) => n.title.toLowerCase().includes(q)) ??
+    null
+  );
+}
+
 export const experienceNodes: ProbeNodeData[] = [
   {
     id: 'exp-pinterest-fulltime',

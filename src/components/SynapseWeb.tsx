@@ -264,7 +264,7 @@ export default function SynapseWeb({
               y2={p.y}
               stroke={hl ? '#67e8f9' : `url(#synapse-grad-${mode})`}
               strokeWidth={hl ? 1.8 : 1.2}
-              opacity={off ? 0.05 : hl ? 0.85 : 0.3}
+              opacity={off ? 0.05 : hl ? 0.85 : 0.25}
               strokeDasharray="3 6"
               className={reducedMotion || off ? undefined : 'synapse-flow'}
               style={{ transition: 'opacity 0.25s' }}
@@ -275,7 +275,7 @@ export default function SynapseWeb({
               cy={extents.top}
               r="2.5"
               fill="#7c3aed"
-              opacity={off ? 0.15 : hl ? 0.95 : 0.6}
+              opacity={off ? 0.15 : hl ? 0.95 : 0.5}
             />
           </g>
         );
@@ -294,7 +294,7 @@ export default function SynapseWeb({
               y2={extents.bottom}
               stroke={hl ? '#67e8f9' : `url(#synapse-grad-${mode})`}
               strokeWidth={hl ? 1.8 : 1.2}
-              opacity={off ? 0.05 : hl ? 0.85 : 0.3}
+              opacity={off ? 0.05 : hl ? 0.85 : 0.25}
               strokeDasharray="3 6"
               className={reducedMotion || off ? undefined : 'synapse-flow'}
               style={{ transition: 'opacity 0.25s' }}
@@ -304,7 +304,7 @@ export default function SynapseWeb({
               cy={extents.bottom}
               r="2.5"
               fill="#06b6d4"
-              opacity={off ? 0.15 : hl ? 0.95 : 0.6}
+              opacity={off ? 0.15 : hl ? 0.95 : 0.5}
             />
           </g>
         );
@@ -325,7 +325,7 @@ export default function SynapseWeb({
                 fill="none"
                 stroke={`url(#synapse-grad-${mode})`}
                 strokeWidth="1"
-                opacity={off ? 0.03 : highlightId ? 0.07 : 0.14}
+                opacity={off ? 0.03 : highlightId ? 0.06 : 0.1}
                 style={{ transition: 'opacity 0.25s' }}
               />
             );
@@ -343,7 +343,7 @@ export default function SynapseWeb({
                   fill="none"
                   stroke={`url(#synapse-grad-${mode})`}
                   strokeWidth="1.5"
-                  opacity={off ? 0.05 : 0.32}
+                  opacity={off ? 0.05 : 0.25}
                   style={{ transition: 'opacity 0.25s' }}
                 />
                 {!off && (
@@ -352,7 +352,7 @@ export default function SynapseWeb({
                     fill="none"
                     stroke={`url(#synapse-grad-${mode})`}
                     strokeWidth="1.5"
-                    opacity="0.55"
+                    opacity="0.4"
                     strokeDasharray="10 14"
                     className={reducedMotion ? undefined : 'synapse-flow'}
                   />
@@ -384,7 +384,7 @@ export default function SynapseWeb({
                   ? 0.04
                   : highlightId
                     ? 0.06
-                    : 0.1 + edge.w * 0.25
+                    : 0.07 + edge.w * 0.2
               }
               style={{ transition: 'opacity 0.25s' }}
             />

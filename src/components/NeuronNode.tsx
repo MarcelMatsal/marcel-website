@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { KIND_COLORS, hexToRgba, type ProbeNodeData } from '@/lib/probeData';
 
 interface NeuronNodeProps {
@@ -32,6 +32,7 @@ export default function NeuronNode({
   onHoverChange,
   onClick,
 }: NeuronNodeProps) {
+  const reducedMotion = useReducedMotion();
   const [hovered, setHoveredState] = useState(false);
   const setHovered = (h: boolean) => {
     setHoveredState(h);
@@ -66,7 +67,7 @@ export default function NeuronNode({
       transition={{ duration: 0.45, delay: (index % 6) * 0.06 }}
       animate={{ opacity: dimmed ? 0.25 : ablated ? 0.55 : 1 }}
       whileHover={{ scale: dimmed ? 1 : 1.06 }}
-      className={`group flex w-32 sm:w-36 flex-col items-center gap-2 cursor-pointer focus:outline-none ${
+      className={`group flex w-32 sm:w-36 flex-col items-center gap-2 cursor-pointer rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05050f] ${
         // loose, organic grid: stagger alternate nodes vertically on wider screens
         index % 2 === 1 ? 'sm:translate-y-6' : ''
       }`}
@@ -74,7 +75,7 @@ export default function NeuronNode({
     >
       {/* chronology chip: timestep + date */}
       {timeLabel && (
-        <span className="flex flex-col items-center gap-1 font-mono text-[9px] tracking-wider mb-0.5">
+        <span className="flex flex-col items-center gap-1 font-mono text-[10px] tracking-wider mb-0.5">
           <span
             className="px-1.5 py-0.5 rounded border"
             style={{
@@ -86,7 +87,7 @@ export default function NeuronNode({
             {timeLabel}
           </span>
           {data.date && (
-            <span className="text-slate-500 text-center leading-tight">
+            <span className="text-slate-400 text-center leading-tight">
               {data.date}
             </span>
           )}
@@ -111,7 +112,7 @@ export default function NeuronNode({
           boxShadow: glow,
         }}
         animate={
-          dimmed || ablated
+          dimmed || ablated || (reducedMotion && !pinged)
             ? { scale: 1 }
             : pinged
               ? { scale: 1.14 }
@@ -122,7 +123,7 @@ export default function NeuronNode({
             ? { duration: 0.25, ease: 'easeOut' }
             : {
                 duration: 2.6 + (index % 5) * 0.35,
-                repeat: dimmed || ablated ? 0 : Infinity,
+                repeat: dimmed || ablated || reducedMotion ? 0 : Infinity,
                 ease: 'easeInOut',
               }
         }
@@ -132,7 +133,7 @@ export default function NeuronNode({
         </span>
         {/* small activation readout inside the circle */}
         <span
-          className="absolute bottom-3 font-mono text-[9px]"
+          className="absolute bottom-3 font-mono text-[10px]"
           style={{ color: hexToRgba(c2, 0.9) }}
         >
           {act.toFixed(2)}
@@ -144,7 +145,7 @@ export default function NeuronNode({
         {data.label}
       </span>
       <span
-        className={`font-mono text-[9px] uppercase tracking-[0.2em] ${
+        className={`font-mono text-[10px] uppercase tracking-[0.2em] ${
           ablated ? 'text-rose-400/70' : ''
         }`}
         style={ablated ? undefined : { color: hexToRgba(c2, dimmed ? 0.35 : 0.75) }}
@@ -177,7 +178,7 @@ export default function NeuronNode({
               />
             ))}
           </div>
-          <span className="font-mono text-[9px] text-slate-400">
+          <span className="font-mono text-[10px] text-slate-400">
             act {act.toFixed(2)}
           </span>
         </motion.div>

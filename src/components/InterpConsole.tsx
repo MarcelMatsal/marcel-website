@@ -2,17 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { experienceNodes, projectNodes } from '@/lib/probeData';
+import { resolveUnit } from '@/lib/probeData';
 
 interface Line {
   kind: 'in' | 'out' | 'err';
   text: string;
 }
-
-const ALL_NODES = [
-  ...experienceNodes.map((n) => ({ ...n, layer: 'experience' })),
-  ...projectNodes.map((n) => ({ ...n, layer: 'projects' })),
-];
 
 const HELP = [
   'probe <unit>     open a unit\'s neuron probe (e.g. probe galilai)',
@@ -24,17 +19,6 @@ const HELP = [
   'backprop         propagate gradients back to the input layer',
   'close            close this console (or press esc)',
 ];
-
-function resolveUnit(query: string) {
-  const q = query.toLowerCase().trim();
-  if (!q) return null;
-  return (
-    ALL_NODES.find((n) => n.id === q) ??
-    ALL_NODES.find((n) => n.label.toLowerCase().includes(q)) ??
-    ALL_NODES.find((n) => n.title.toLowerCase().includes(q)) ??
-    null
-  );
-}
 
 /**
  * Hidden interpretability console (press ` or ~): a second interface to the

@@ -176,7 +176,7 @@ export default function Skills({
         />
         {icon}
         <span>{name}</span>
-        <span className="text-[9px] text-slate-500">{featureId(name)}</span>
+        <span className="text-[10px] text-slate-400/80">{featureId(name)}</span>
 
         {/* feature card, SAE-dashboard style */}
         <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 hidden group-hover:flex group-focus-visible:flex flex-col gap-1.5 w-60 p-3 rounded-lg border border-cyan-500/25 bg-[#0b0b1c] shadow-[0_0_20px_rgba(6,182,212,0.15)] text-left normal-case">
@@ -185,11 +185,11 @@ export default function Skills({
           </span>
           {tops.length > 0 ? (
             <>
-              <span className="text-[9px] text-slate-500 tracking-wider uppercase">
+              <span className="text-[10px] text-slate-400 tracking-wider uppercase">
                 top activating units
               </span>
               {tops.map(({ node, i }) => (
-                <span key={node.id} className="flex items-center gap-2 text-[10px] text-slate-300">
+                <span key={node.id} className="flex items-center gap-2 text-[11px] text-slate-300">
                   <span className="text-violet-400 shrink-0">u{String(i).padStart(2, '0')}</span>
                   <span className="truncate flex-1">{node.label}</span>
                   <span className="flex-none w-10 h-1 rounded-full bg-white/10 overflow-hidden">
@@ -203,7 +203,7 @@ export default function Skills({
               ))}
             </>
           ) : (
-            <span className="text-[10px] text-slate-500">
+            <span className="text-[11px] text-slate-400">
               no project units activate on this feature — yet
             </span>
           )}
@@ -276,15 +276,15 @@ export default function Skills({
         </div>
 
         {/* dictionary readout + steering control */}
-        <p className="relative font-mono text-[10px] text-slate-500 tracking-[0.2em] text-center mt-10">
+        <p className="relative font-mono text-[11px] text-slate-400 tracking-[0.2em] text-center mt-10">
           {selectedSkills.length > 0
             ? `${selectedSkills.length} feature${selectedSkills.length > 1 ? 's' : ''} feeding layer_02 ↓`
             : `${programmingLanguages.length + frameworks.length} features idle — select to feed layer_02`}
         </p>
         {onSteeringChange && (
           <div
-            className={`relative flex items-center justify-center gap-3 mt-4 font-mono text-[10px] tracking-wider transition-opacity ${
-              selectedSkills.length > 0 ? 'text-slate-400' : 'text-slate-600 opacity-50'
+            className={`relative flex items-center justify-center gap-3 mt-4 font-mono text-[11px] tracking-wider transition-opacity ${
+              selectedSkills.length > 0 ? 'text-slate-400' : 'text-slate-500 opacity-60'
             }`}
           >
             <label htmlFor="steering">steering coefficient α =</label>

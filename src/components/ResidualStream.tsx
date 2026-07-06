@@ -97,11 +97,23 @@ export default function ResidualStream() {
   const backward = dir === 'bwd';
 
   return (
+    <>
+      {/* mobile: a slim progress bar under the navbar stands in for the rail */}
+      <motion.div
+        aria-hidden="true"
+        className={`lg:hidden fixed top-16 left-0 right-0 h-[2px] z-[190] origin-left ${
+          backward
+            ? 'bg-gradient-to-r from-[#f59e0b] to-[#f43f5e]'
+            : 'bg-gradient-to-r from-[#7c3aed] to-[#06b6d4]'
+        }`}
+        style={{ scaleX: scrollYProgress }}
+      />
+
     <div className="fixed left-5 top-24 bottom-12 z-40 hidden lg:block w-24">
       <div className="relative h-full">
         {/* pass-direction readout */}
         <span
-          className={`absolute -top-6 left-0 font-mono text-[9px] tracking-[0.25em] uppercase transition-colors duration-300 ${
+          className={`absolute -top-6 left-0 font-mono text-[10px] tracking-[0.25em] uppercase transition-colors duration-300 ${
             backward ? 'text-rose-400' : 'text-cyan-400/70'
           }`}
         >
@@ -154,10 +166,10 @@ export default function ResidualStream() {
               }`}
             />
             <span
-              className={`font-mono text-[9px] tracking-[0.2em] uppercase transition-colors ${
+              className={`font-mono text-[10px] tracking-[0.2em] uppercase transition-colors ${
                 active === i
                   ? 'text-cyan-300'
-                  : 'text-slate-600 group-hover:text-slate-400'
+                  : 'text-slate-500 group-hover:text-slate-300'
               }`}
             >
               {i === LAYERS.length - 1 ? tick.label : `L${i}·${tick.label}`}
@@ -166,5 +178,6 @@ export default function ResidualStream() {
         ))}
       </div>
     </div>
+    </>
   );
 }

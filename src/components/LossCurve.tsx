@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { animate, motion, useInView } from 'framer-motion';
+import { animate, motion, useInView, useReducedMotion } from 'framer-motion';
 
 const W = 560;
 const H = 190;
@@ -75,10 +75,16 @@ const DURATION = 3.2;
  */
 export default function LossCurve() {
   const ref = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
   const inView = useInView(ref, { amount: 0.5 });
   const [readout, setReadout] = useState({ epoch: 0, loss: 2.413 });
 
   useEffect(() => {
+    if (reducedMotion) {
+      // skip the descent animation: show the converged state directly
+      setReadout({ epoch: 48, loss: 2.41 * Math.exp(-5.5) + 0.003 });
+      return;
+    }
     if (!inView) {
       setReadout({ epoch: 0, loss: 2.413 });
       return;
@@ -93,7 +99,7 @@ export default function LossCurve() {
         }),
     });
     return () => controls.stop();
-  }, [inView]);
+  }, [inView, reducedMotion]);
 
   const converged = readout.epoch >= 48;
 
@@ -108,10 +114,10 @@ export default function LossCurve() {
         </defs>
 
         {/* axis labels */}
-        <text x="20" y="16" className="fill-slate-500" fontSize="9" fontFamily="var(--font-geist-mono)">
+        <text x="20" y="16" className="fill-slate-500" fontSize="10" fontFamily="var(--font-geist-mono)">
           loss
         </text>
-        <text x="540" y="184" textAnchor="end" className="fill-slate-500" fontSize="9" fontFamily="var(--font-geist-mono)">
+        <text x="540" y="184" textAnchor="end" className="fill-slate-500" fontSize="10" fontFamily="var(--font-geist-mono)">
           epochs →
         </text>
 
@@ -120,7 +126,7 @@ export default function LossCurve() {
 
         {/* marker at the global minimum */}
         <line x1={minX} y1={minY + 6} x2={minX} y2={H - 18} stroke="rgba(6,182,212,0.35)" strokeWidth="1" strokeDasharray="2 4" />
-        <text x={minX} y={H - 6} textAnchor="middle" className="fill-cyan-400/80" fontSize="9" fontFamily="var(--font-geist-mono)">
+        <text x={minX} y={H - 6} textAnchor="middle" className="fill-cyan-400/80" fontSize="10" fontFamily="var(--font-geist-mono)">
           global minimum
         </text>
 
@@ -131,13 +137,13 @@ export default function LossCurve() {
           stroke="url(#descent-grad)"
           strokeWidth="2"
           strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: inView ? 1 : 0 }}
-          transition={{ duration: DURATION, ease: 'easeInOut' }}
+          initial={{ pathLength: reducedMotion ? 1 : 0 }}
+          animate={{ pathLength: reducedMotion || inView ? 1 : 0 }}
+          transition={{ duration: reducedMotion ? 0 : DURATION, ease: 'easeInOut' }}
         />
 
         {/* convergence ping once the ball settles */}
-        {inView && (
+        {inView && !reducedMotion && (
           <motion.circle
             cx={minX}
             cy={minY}
@@ -155,9 +161,17 @@ export default function LossCurve() {
           r="5.5"
           fill="#fb7185"
           style={{ filter: 'drop-shadow(0 0 6px rgba(244,63,94,0.9))' }}
-          initial={{ cx: xs[0], cy: ys[0] }}
-          animate={inView ? { cx: xs, cy: ys } : { cx: xs[0], cy: ys[0] }}
-          transition={{ duration: DURATION, ease: 'easeInOut' }}
+          initial={
+            reducedMotion ? { cx: minX, cy: minY } : { cx: xs[0], cy: ys[0] }
+          }
+          animate={
+            reducedMotion
+              ? { cx: minX, cy: minY }
+              : inView
+                ? { cx: xs, cy: ys }
+                : { cx: xs[0], cy: ys[0] }
+          }
+          transition={{ duration: reducedMotion ? 0 : DURATION, ease: 'easeInOut' }}
         />
       </svg>
 

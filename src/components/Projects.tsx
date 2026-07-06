@@ -156,7 +156,7 @@ export default function Projects({
         </p>
 
         {/* edge-type toggle */}
-        <div className="relative z-10 flex items-center justify-center gap-2 font-mono text-[10px] tracking-[0.2em] text-slate-500 mb-12">
+        <div className="relative z-10 flex items-center justify-center gap-2 font-mono text-[11px] tracking-[0.2em] text-slate-400 mb-12">
           <span>wired by:</span>
           {(['tech', 'people'] as const).map((t) => (
             <button
@@ -175,8 +175,8 @@ export default function Projects({
         </div>
 
         {activeIndices.length === 0 ? (
-          <p className="text-center text-slate-400 text-lg">
-            There are no current projects being featured with that selected skill
+          <p className="text-center font-mono text-sm text-slate-400">
+            no units activate on this filter — clear it or select another feature
           </p>
         ) : null}
 

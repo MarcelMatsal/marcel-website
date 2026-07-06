@@ -25,7 +25,7 @@ export default function Footer() {
       <p className="font-mono text-[10px] text-slate-600 tracking-[0.3em] mt-2">
         {'// end of forward pass'}
       </p>
-      <p className="hidden sm:block font-mono text-[10px] text-slate-700 mt-2">
+      <p className="hidden sm:block font-mono text-[11px] text-slate-500 mt-2">
         press ` to open the interpretability console
       </p>
     </footer>

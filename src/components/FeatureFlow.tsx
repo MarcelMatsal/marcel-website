@@ -90,12 +90,12 @@ export default function FeatureFlow({ sectionRef, selected }: FeatureFlowProps) 
               stroke="url(#feature-grad)"
               strokeWidth="1.2"
               strokeDasharray="3 6"
-              opacity="0.28"
+              opacity="0.22"
               className="synapse-flow"
             />
             {/* ports matching the divider terminals: teal above, violet below */}
-            <circle cx={x} cy={0} r="2.5" fill="#06b6d4" opacity="0.7" />
-            <circle cx={x} cy={h} r="2.5" fill="#7c3aed" opacity="0.7" />
+            <circle cx={x} cy={0} r="2.5" fill="#06b6d4" opacity="0.55" />
+            <circle cx={x} cy={h} r="2.5" fill="#7c3aed" opacity="0.55" />
           </g>
         );
       })}

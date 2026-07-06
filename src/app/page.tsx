@@ -11,6 +11,7 @@ import TimelineSection from '@/components/ExperienceTimeline';
 import LayerDivider from '@/components/LayerDivider';
 import ResidualStream from '@/components/ResidualStream';
 import InterpConsole from '@/components/InterpConsole';
+import { resolveUnit } from '@/lib/probeData';
 
 export default function Home() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
@@ -25,6 +26,21 @@ export default function Home() {
     };
     window.addEventListener('interp:steer', onSteer);
     return () => window.removeEventListener('interp:steer', onSteer);
+  }, []);
+
+  // deep links: /?probe=<unit id or name> opens that unit's probe on load
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search).get('probe');
+    if (!query) return;
+    const node = resolveUnit(query);
+    if (!node) return;
+    // let the sections mount their listeners and settle before probing
+    const t = setTimeout(() => {
+      window.dispatchEvent(
+        new CustomEvent('interp:probe', { detail: { id: node.id } })
+      );
+    }, 600);
+    return () => clearTimeout(t);
   }, []);
 
   return (

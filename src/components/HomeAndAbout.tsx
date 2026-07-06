@@ -47,6 +47,7 @@ export default function HomeAndAboutSection() {
             alt="Marcel Mateos Salles"
             width={300}
             height={300}
+            priority
             className="rounded-full border-4 border-[#05050f] hover:scale-105 transition-transform duration-300"
           />
         </div>

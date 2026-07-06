@@ -65,7 +65,7 @@ export default function TimelineSection() {
           {LEGEND.map((kind) => {
             const { c1, c2, tag } = KIND_COLORS[kind];
             return (
-              <span key={kind} className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">
+              <span key={kind} className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400">
                 <span
                   className="w-2 h-2 rounded-full"
                   style={{
@@ -80,7 +80,7 @@ export default function TimelineSection() {
         </div>
 
         {/* temporal axis note */}
-        <p className="relative z-10 text-center font-mono text-[10px] text-slate-500 tracking-[0.2em] mb-12">
+        <p className="relative z-10 text-center font-mono text-[11px] text-slate-400 tracking-[0.2em] mb-12">
           signal flows t-{experienceNodes.length - 1} (past) ⟶ t-0 (now)
         </p>
 

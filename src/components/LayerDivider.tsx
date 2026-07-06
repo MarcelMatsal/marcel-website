@@ -34,7 +34,7 @@ export default function LayerDivider({
               y2="100%"
               stroke={(i + j) % 2 === 0 ? '#7c3aed' : '#06b6d4'}
               strokeWidth="1"
-              opacity="0.08"
+              opacity="0.055"
             />
           ))
         )}
@@ -49,7 +49,7 @@ export default function LayerDivider({
             y2="100%"
             stroke={i % 2 === 0 ? '#06b6d4' : '#8b5cf6'}
             strokeWidth="1"
-            opacity="0.3"
+            opacity="0.22"
             strokeDasharray="3 8"
             className="synapse-flow"
           />
@@ -57,10 +57,10 @@ export default function LayerDivider({
 
         {/* endpoint terminals */}
         {top.map((x, i) => (
-          <circle key={`t-${i}`} cx={`${x}%`} cy="0%" r="2" fill="#7c3aed" opacity="0.5" />
+          <circle key={`t-${i}`} cx={`${x}%`} cy="0%" r="2" fill="#7c3aed" opacity="0.45" />
         ))}
         {bottom.map((x, i) => (
-          <circle key={`b-${i}`} cx={`${x}%`} cy="100%" r="2" fill="#06b6d4" opacity="0.5" />
+          <circle key={`b-${i}`} cx={`${x}%`} cy="100%" r="2" fill="#06b6d4" opacity="0.45" />
         ))}
       </svg>
     </div>

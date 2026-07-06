@@ -82,13 +82,13 @@ export default function LogitTyper() {
       </div>
 
       {/* logit readout: the distribution the tagline is sampled from */}
-      <div className="h-5 flex flex-wrap items-center gap-x-3 justify-center sm:justify-start font-mono text-[10px] tracking-wider">
-        <span className="text-slate-600">p(next) →</span>
+      <div className="h-5 flex flex-wrap items-center gap-x-3 justify-center sm:justify-start font-mono text-[11px] tracking-wider">
+        <span className="text-slate-500">p(next) →</span>
         {CANDIDATES.map((c, i) => (
           <span
             key={c.short}
             className={`transition-colors duration-150 ${
-              i === activeIdx ? 'text-cyan-300' : 'text-slate-600'
+              i === activeIdx ? 'text-cyan-300' : 'text-slate-500'
             }`}
           >
             {c.short} {c.p.toFixed(2)}

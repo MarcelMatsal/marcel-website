@@ -24,7 +24,7 @@ body {
   background-color: var(--background);
   /* dot-matrix pattern over the base color */
   background-image: radial-gradient(
-    rgba(148, 163, 184, 0.08) 1px,
+    rgba(148, 163, 184, 0.06) 1px,
     transparent 1px
   );
   background-size: 26px 26px;
