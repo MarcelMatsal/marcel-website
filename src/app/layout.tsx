@@ -15,9 +15,28 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const title = "Marcel Mateos Salles · Software Engineer & ML Researcher";
+const description =
+  "Backend software engineer and ML researcher (Brown CS-Econ). Explore my experience and projects as an interactive neural network — probe the units, steer the features.";
+
 export const metadata: Metadata = {
-  title: "Marcel's Website",
-  description: "Welcome to my personal website! I'm a backend software engineer and machine learning researcher at Brown University.",
+  metadataBase: new URL("https://www.marcelmatsal.com"),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: "https://www.marcelmatsal.com",
+    siteName: "Marcel Mateos Salles",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: title }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
@@ -41,7 +60,11 @@ export default function RootLayout({
           `}
         </Script>
       </head>
+      {/* browser extensions (Grammarly, PerkSpot, …) inject classes into
+          <body> before hydration; suppress the resulting false-positive
+          mismatch warning — this only applies one level deep */}
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}

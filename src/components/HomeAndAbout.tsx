@@ -1,9 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { TypeAnimation } from 'react-type-animation';
 import { Link } from 'react-scroll';
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import NeuralCanvas from './NeuralCanvas';
+import LogitTyper from './LogitTyper';
 
 export default function HomeAndAboutSection() {
   const [showArrow, setShowArrow] = useState(true);
@@ -19,27 +21,46 @@ export default function HomeAndAboutSection() {
   }, []);
 
   return (
-    <section id='home' className="flex flex-col sm:flex-row items-center justify-center min-h-[80vh] gap-8 px-8 sm:px-20">
+    <section
+      id="home"
+      className="relative flex flex-col sm:flex-row items-center justify-center min-h-[calc(100vh-64px)] gap-8 px-8 sm:px-20 overflow-hidden"
+    >
+      {/* Animated neural network backdrop */}
+      <div className="absolute inset-0">
+        <NeuralCanvas className="absolute inset-0 opacity-70" />
+        {/* soft color vignettes over the graph — kept clear of the section
+            edges so the hero blends into the shared page background */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_25%,rgba(124,58,237,0.12),transparent_50%),radial-gradient(ellipse_at_80%_55%,rgba(6,182,212,0.09),transparent_50%)]" />
+      </div>
+
       {/* Left Side: Image and Social Links */}
-      <div className="flex flex-col items-center sm:items-start">
-        {/* Profile Image */}
-        <Image
-          src="/marcel_pfp.JPEG" // Replace with your actual image file name
-          alt="Marcel Mateos Salles"
-          width={300} // Adjust width as needed
-          height={300} // Adjust height as needed
-          className="rounded-full border-4 border-gray-300 dark:border-gray-700 shadow-lg hover:scale-105 transition-transform duration-300"
-        />
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="relative z-10 flex flex-col items-center sm:items-start"
+      >
+        {/* Profile Image with glowing gradient ring */}
+        <div className="rounded-full p-[3px] bg-gradient-to-br from-[#7c3aed] to-[#06b6d4] shadow-[0_0_45px_rgba(124,58,237,0.35),0_0_90px_rgba(6,182,212,0.2)]">
+          <Image
+            src="/marcel_pfp.JPEG"
+            alt="Marcel Mateos Salles"
+            width={300}
+            height={300}
+            priority
+            className="rounded-full border-4 border-[#05050f] hover:scale-105 transition-transform duration-300"
+          />
+        </div>
 
         {/* Social Links */}
         <div className="flex flex-col items-center w-full">
-          <div className="flex justify-center gap-4 mt-4">
+          <div className="flex justify-center gap-4 mt-5">
             {/* GitHub Link */}
             <a
               href="https://github.com/MarcelMatsal"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="text-slate-400 hover:text-cyan-300 hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.8)] transition-all"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +77,7 @@ export default function HomeAndAboutSection() {
               href="https://scholar.google.com/citations?hl=en&user=7QmQOSgAAAAJ&inst=7213243471243491304"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="text-slate-400 hover:text-cyan-300 hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.8)] transition-all"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +85,7 @@ export default function HomeAndAboutSection() {
                 viewBox="0 0 24 24"
                 className="h-6 w-6"
               >
-                <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 10a8 8 0 0 1 7.162 3.44L24 9.5z"/>
+                <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 10a8 8 0 0 1 7.162 3.44L24 9.5z" />
               </svg>
             </a>
 
@@ -73,7 +94,7 @@ export default function HomeAndAboutSection() {
               href="https://www.linkedin.com/in/marcelmatsal/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="text-slate-400 hover:text-cyan-300 hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.8)] transition-all"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +111,7 @@ export default function HomeAndAboutSection() {
               href="/Marcel_Mateos_Salles_Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="text-slate-400 hover:text-cyan-300 hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.8)] transition-all"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -98,91 +119,123 @@ export default function HomeAndAboutSection() {
                 viewBox="0 0 24 24"
                 className="h-6 w-6"
               >
-                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
               </svg>
             </a>
 
-            {/* Location with Pin Icon - Now to the right of resume */}
+            {/* Location with Pin Icon */}
             <div className="flex items-center gap-2">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                strokeWidth={1.5} 
-                stroke="currentColor" 
-                className="w-6 h-6 text-gray-600 dark:text-gray-300"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6 text-slate-400"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                />
               </svg>
-              <span className="text-gray-600 dark:text-gray-300 font-bold">
-                ATX/PVD
-              </span>
+              <span className="text-slate-400 font-bold">ATX/PVD</span>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Right Side: Name, Moving Text, and About Text */}
-      <div className="flex flex-col items-center sm:items-start text-center sm:text-left max-w-xl">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.15 }}
+        className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left max-w-xl"
+      >
+        {/* mono overline */}
+        <p className="font-mono text-xs text-cyan-400/80 tracking-[0.35em] uppercase mb-3">
+          {'// forward pass'}
+        </p>
+
         {/* Name */}
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight">
+        <h1 className="text-4xl sm:text-6xl font-bold tracking-wide text-slate-100">
           Marcel Mateos Salles
         </h1>
 
-        {/* Moving Text */}
-        <div className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mt-4 h-[2em]">
-          I am a <TypeAnimation
-            sequence={[
-              'Software Engineer.',
-              3200,
-              'Deep Learning/ML Researcher.',
-              3200,
-              'Ex D1 Athlete.',
-              3200,
-            ]}
-            wrapper="span"
-            speed={50}
-            repeat={Infinity}
-            className="text-blue-500 font-bold"
-          />
-        </div>
+        {/* Moving Text, sampled from a logit readout */}
+        <LogitTyper />
 
         {/* About Text */}
-        <p className="text-gray-600 dark:text-gray-300 mt-1">
-          Hey! I&apos;m Marcel, a recent grad from Brown University with a degree in Computer Science and Economics.
-          I&apos;m a <span className="text-blue-500 font-bold">backend engineer</span> and <span className="text-blue-500 font-bold">ML/AI</span> researcher with a passion for intersecting software
-          engineering with cutting-edge research in ML/AI. My current research interests lie in 
-          LLMs, model interpretability, and self-supervised learning. I&apos;m a member of the <a href="https://galilai-group.github.io/" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">GalilAI Group </a>with <a href="https://randallbalestriero.github.io/" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">Prof. Randall Balestriero</a> and an incoming Software Engineer
-          at <span className="text-blue-500 font-bold">Pinterest!</span>
-        </p>
-      </div>
-
-        {/* Down Arrow Button */}
-        {showArrow && (
-          <Link
-            to="experience"
-            smooth={true}
-            duration={500}
-            className="absolute bottom-8 flex items-center justify-center w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors animate-bounce cursor-pointer"
+        <p className="text-slate-300 mt-1">
+          Hey! I&apos;m Marcel, a recent grad from Brown University with a degree
+          in Computer Science and Economics. I&apos;m a{' '}
+          <span className="text-cyan-400 font-bold">backend engineer</span> and{' '}
+          <span className="text-violet-400 font-bold">ML/AI</span> researcher
+          with a passion for intersecting software engineering with
+          cutting-edge research in ML/AI. My current research interests lie in
+          LLMs, model interpretability, and self-supervised learning. I&apos;m a
+          member of the{' '}
+          <a
+            href="https://galilai-group.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-violet-400 font-bold hover:underline"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6 text-gray-600 dark:text-gray-300"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
-              />
-            </svg>
-          </Link>
-        )}
+            GalilAI Group{' '}
+          </a>
+          with{' '}
+          <a
+            href="https://randallbalestriero.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-violet-400 font-bold hover:underline"
+          >
+            Prof. Randall Balestriero
+          </a>{' '}
+          and an incoming Software Engineer at{' '}
+          <span className="text-cyan-400 font-bold">Pinterest!</span>
+        </p>
 
+        {/* guided tour: execute the whole site as one forward pass */}
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new Event('interp:run'))}
+          title="Watch the network run — a guided pass through every layer"
+          className="mt-6 inline-flex items-center gap-2 font-mono text-xs tracking-[0.15em] px-4 py-2 rounded-full border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400/70 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all cursor-pointer"
+        >
+          {'▶ run_forward_pass()'}
+        </button>
+      </motion.div>
+
+      {/* Down Arrow Button */}
+      {showArrow && (
+        <Link
+          to="experience"
+          smooth={true}
+          duration={500}
+          className="absolute bottom-8 z-10 flex items-center justify-center w-12 h-12 rounded-full border border-cyan-500/30 bg-[#0b0b1c]/80 hover:border-cyan-400/60 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all animate-bounce cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-6 h-6 text-cyan-300"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
+            />
+          </svg>
+        </Link>
+      )}
     </section>
   );
 }

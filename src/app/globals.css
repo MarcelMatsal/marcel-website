@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #05050f;
+  --foreground: #e2e8f0;
+  --accent-teal: #06b6d4;
+  --accent-purple: #7c3aed;
+  --panel: #0b0b1c;
 }
 
 @theme inline {
@@ -12,23 +15,89 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 html {
+  color-scheme: dark;
   scroll-behavior: smooth;
 }
 
+body {
+  background-color: var(--background);
+  /* dot-matrix pattern over the base color */
+  background-image: radial-gradient(
+    rgba(148, 163, 184, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 26px 26px;
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: rgba(6, 182, 212, 0.35);
+}
+
+/* thin glowing divider used between sections */
+.synapse-divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(124, 58, 237, 0.5),
+    rgba(6, 182, 212, 0.5),
+    transparent
+  );
+}
+
+/* directional flow along dashed synapse lines */
+@keyframes synapse-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+.synapse-flow {
+  animation: synapse-flow 1.4s linear infinite;
+}
+
+/* scrolling up runs the backward pass: every synapse line flows in reverse */
+.backward-pass .synapse-flow {
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .synapse-flow {
+    animation: none;
+  }
+}
+
+/* the model card prints as a clean light one-pager */
+@media print {
+  body {
+    background: #fff !important;
+    background-image: none !important;
+  }
+  .model-card,
+  .model-card * {
+    color: #1e293b !important;
+    border-color: #cbd5e1 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .model-card h1,
+  .model-card h2 {
+    color: #0f172a !important;
+  }
+  .model-card pre {
+    background: #f1f5f9 !important;
+  }
+  .model-card a {
+    text-decoration: underline;
+  }
+  .print-hidden {
+    display: none !important;
+  }
+}
 
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% {
