@@ -1,18 +1,18 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
+import type { Metadata } from "next";
+import Link from "next/link";
 import {
   experienceNodes,
   publications,
   languageFeatures,
   frameworkFeatures,
   featureId,
-} from '@/lib/probeData';
-import PrintButton from '@/components/PrintButton';
+} from "@/lib/probeData";
+import PrintButton from "@/components/PrintButton";
 
 export const metadata: Metadata = {
-  title: 'Model Card · Marcel Mateos Salles',
+  title: "Model Card · Marcel Mateos Salles",
   description:
-    'A HuggingFace-style model card for marcel-mateos-salles: architecture, training data, evaluation, and intended use.',
+    "A HuggingFace-style model card for marcel-mateos-salles: architecture, training data, evaluation, and intended use.",
 };
 
 const YAML_HEADER = `---
@@ -22,7 +22,7 @@ base_model: brown-university/cs-econ (magna cum laude, honors)
 finetuned_for: [backend engineering, ML research, interpretability]
 release: v2026.05
 license: open-to-opportunities-1.0
-contact: marcel_mateos_salles@brown.edu
+contact: marcel_mateos_salles@alumni.brown.edu
 ---`;
 
 const BIBTEX = `@misc{mateossalles2026,
@@ -66,13 +66,13 @@ export default function ModelCardPage() {
 
         {/* header */}
         <p className="font-mono text-xs text-cyan-400/80 tracking-[0.35em] uppercase mb-2">
-          {'// model_card'}
+          {"// model_card"}
         </p>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-wide text-slate-100">
           marcel-mateos-salles
         </h1>
         <p className="mt-3 text-slate-400 text-sm">
-          The static, printable readout of the interactive network at{' '}
+          The static, printable readout of the interactive network at{" "}
           <Link href="/" className="text-cyan-300 hover:underline">
             marcelmatsal.com
           </Link>
@@ -87,20 +87,19 @@ export default function ModelCardPage() {
         <CardSection title="Model description">
           <p className="text-slate-300 text-sm leading-relaxed">
             Backend software engineer and ML researcher. Recent graduate of
-            Brown University (Computer Science–Economics), member of the
-            GalilAI Group with Prof. Randall Balestriero, and incoming Software
-            Engineer at Pinterest. Research interests: LLMs, model
-            interpretability, and self-supervised learning — with a particular
-            focus on spurious correlations under parameter-efficient
-            finetuning.
+            Brown University (Computer Science-Economics), member of the GalilAI
+            Group with Prof. Randall Balestriero, and incoming Software Engineer
+            at Pinterest. Research interests: LLMs, model interpretability, and
+            self-supervised learning — with a particular focus on spurious
+            correlations under parameter-efficient finetuning.
           </p>
         </CardSection>
 
         <CardSection title="Architecture">
           <p className="text-slate-400 text-sm mb-4">
-            One unit per role, stacked in temporal order. t-0 is the most
-            recent layer; activations reflect how central each unit is to the
-            current model.
+            One unit per role, stacked in temporal order. t-0 is the most recent
+            layer; activations reflect how central each unit is to the current
+            model.
           </p>
           <div className="overflow-x-auto rounded-lg border border-white/10">
             <table className="w-full font-mono text-xs">
@@ -142,7 +141,7 @@ export default function ModelCardPage() {
             <li>
               <span className="text-slate-100 font-medium">
                 Brown University
-              </span>{' '}
+              </span>{" "}
               — B.S. Computer Science–Economics, Magna Cum Laude, Honors. GPA
               4.0/4.0.
             </li>
@@ -169,15 +168,15 @@ export default function ModelCardPage() {
                   {pub.title}
                 </p>
                 <p className="mt-1 text-xs text-slate-400">
-                  {pub.authors.join(', ')}
+                  {pub.authors.join(", ")}
                 </p>
                 <p className="mt-2 font-mono text-[11px] text-slate-400">
                   {pub.venues
                     .map((v) => `${v.name} · ${v.detail}`)
-                    .join('  ·  ')}
+                    .join("  ·  ")}
                   {pub.links.map((l) => (
                     <span key={l.href}>
-                      {'  ·  '}
+                      {"  ·  "}
                       <a
                         href={l.href}
                         target="_blank"
@@ -201,8 +200,7 @@ export default function ModelCardPage() {
                 key={name}
                 className="font-mono text-xs px-2.5 py-1 rounded-full border border-white/10 text-slate-300"
               >
-                {name}{' '}
-                <span className="text-slate-500">{featureId(name)}</span>
+                {name} <span className="text-slate-500">{featureId(name)}</span>
               </span>
             ))}
           </div>
@@ -211,14 +209,14 @@ export default function ModelCardPage() {
         <CardSection title="Intended use">
           <p className="text-slate-300 text-sm leading-relaxed">
             Backend systems and ML research teams that want an engineer who
-            reads the papers and ships the infrastructure. Direct use:{' '}
+            reads the papers and ships the infrastructure. Direct use:{" "}
             <a
-              href="mailto:marcel_mateos_salles@brown.edu"
+              href="mailto:marcel_mateos_salles@alumni.brown.edu"
               className="text-cyan-300 hover:underline"
             >
-              marcel_mateos_salles@brown.edu
+              marcel_mateos_salles@alumni.brown.edu
             </a>
-            . See also{' '}
+            . See also{" "}
             <a
               href="https://github.com/MarcelMatsal"
               target="_blank"
@@ -227,7 +225,7 @@ export default function ModelCardPage() {
             >
               GitHub
             </a>
-            ,{' '}
+            ,{" "}
             <a
               href="https://scholar.google.com/citations?hl=en&user=7QmQOSgAAAAJ&inst=7213243471243491304"
               target="_blank"
@@ -236,7 +234,7 @@ export default function ModelCardPage() {
             >
               Google Scholar
             </a>
-            ,{' '}
+            ,{" "}
             <a
               href="https://www.linkedin.com/in/marcelmatsal/"
               target="_blank"
@@ -245,7 +243,7 @@ export default function ModelCardPage() {
             >
               LinkedIn
             </a>
-            , and the{' '}
+            , and the{" "}
             <a
               href="/Marcel_Mateos_Salles_Resume.pdf"
               target="_blank"
@@ -261,16 +259,13 @@ export default function ModelCardPage() {
         <CardSection title="Limitations">
           <ul className="space-y-1.5 text-sm text-slate-300 list-disc list-inside marker:text-slate-600">
             <li>
-              Performance degrades measurably when the coffee supply is
-              ablated.
+              Performance degrades measurably when the coffee supply is ablated.
             </li>
             <li>
-              Known bias toward turning conversations to mechanistic
-              interpretability.
+              Addicted to fitness and spending time outside. Currently training
+              for the Seawheeze Halfmarathon.
             </li>
-            <li>
-              Will occasionally overfit to a side project until it ships.
-            </li>
+            <li>Will occasionally overfit to a random fixation.</li>
           </ul>
         </CardSection>
 
@@ -281,7 +276,7 @@ export default function ModelCardPage() {
         </CardSection>
 
         <p className="mt-12 font-mono text-[10px] text-slate-600 tracking-[0.3em]">
-          {'// generated from the same data that powers the network'}
+          {"// generated from the same data that powers the network"}
         </p>
       </div>
     </main>

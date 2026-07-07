@@ -62,8 +62,6 @@ export default function Skills({
   steering = 1,
   onSteeringChange,
 }: SkillsProps) {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const tooltipRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   /** chip briefly highlighted after a probe-panel attribution row points here */
@@ -77,15 +75,6 @@ export default function Skills({
     setTouchMode(window.matchMedia('(hover: none)').matches);
   }, []);
 
-  // Show tooltip when component mounts if not shown in this session
-  useEffect(() => {
-    const hasShownTooltip = sessionStorage.getItem('hasShownTooltip');
-    if (!hasShownTooltip) {
-      setShowTooltip(true);
-      sessionStorage.setItem('hasShownTooltip', 'true');
-    }
-  }, []);
-
   // Load selected skills from localStorage and propagate to the projects filter
   useEffect(() => {
     const savedSkills = localStorage.getItem('selectedSkills');
@@ -95,27 +84,6 @@ export default function Skills({
       onSkillSelect(parsedSkills);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Intersection Observer to hide tooltip when navbar overlaps it
-  useEffect(() => {
-    if (!tooltipRef.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) {
-          setShowTooltip(false);
-        }
-      },
-      {
-        threshold: 0.5,
-        rootMargin: '0px 0px 0px 0px'
-      }
-    );
-
-    observer.observe(tooltipRef.current);
-
-    return () => observer.disconnect();
   }, []);
 
   // interpretability console: `filter <skill>` toggles, `clear` resets
@@ -180,11 +148,6 @@ export default function Skills({
     setSelectedSkills(updatedSkills);
     onSkillSelect(updatedSkills);
     localStorage.setItem('selectedSkills', JSON.stringify(updatedSkills));
-
-    // Hide tooltip when first skill is selected
-    if (updatedSkills.length > 0) {
-      setShowTooltip(false);
-    }
   };
 
   const programmingLanguages = languageFeatures.map((name) => ({
@@ -330,33 +293,6 @@ export default function Skills({
               {programmingLanguages.map(renderChip)}
             </div>
           </div>
-
-          {/* Tooltip */}
-          {showTooltip && (
-            <div
-              ref={tooltipRef}
-              className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#0b0b1c] p-3 rounded-lg border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.25)] z-[100] animate-bounce"
-            >
-              <div className="flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-cyan-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <p className="text-sm text-slate-300">
-                  Select skills to filter projects
-                </p>
-              </div>
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-[#0b0b1c]"></div>
-            </div>
-          )}
 
           {/* Frameworks Section */}
           <div>
