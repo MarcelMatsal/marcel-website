@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { experienceNodes, KIND_COLORS, hexToRgba, type NodeKind } from '@/lib/probeData';
+import { trackEvent } from '@/lib/analytics';
 import NeuronNode from './NeuronNode';
 import ProbePanel from './ProbePanel';
 import SectionHeading from './SectionHeading';
@@ -130,7 +131,10 @@ export default function TimelineSection() {
                 pinged={waveIndex === index}
                 ablated={ablated.includes(node.id)}
                 onHoverChange={(h) => setHoverId(h ? node.id : null)}
-                onClick={() => setOpenIndex(index)}
+                onClick={() => {
+                  setOpenIndex(index);
+                  trackEvent('probe_open', { unit: node.id, layer: 'experience', method: 'click' });
+                }}
               />
             ))}
           </div>

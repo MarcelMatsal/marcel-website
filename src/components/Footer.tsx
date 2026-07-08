@@ -1,10 +1,13 @@
 'use client';
 
+import { trackEvent } from '@/lib/analytics';
+
 export default function Footer() {
   const runBackprop = () => {
     // scrolling up is what actually flips the page into the backward pass
     // (ResidualStream watches direction); nothing to propagate from the top
     if (window.scrollY < 4) return;
+    trackEvent('backprop_run', { method: 'footer' });
     document.documentElement.classList.add('backward-pass');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

@@ -11,6 +11,7 @@ import {
   languageFeatures,
   frameworkFeatures,
 } from '@/lib/probeData';
+import { trackEvent, trackEventDebounced } from '@/lib/analytics';
 
 interface SkillsProps {
   onSkillSelect: (selectedSkills: string[]) => void;
@@ -145,6 +146,7 @@ export default function Skills({
       ? selectedSkills.filter((s) => s !== skillName)
       : [...selectedSkills, skillName];
 
+    if (!isSelected) trackEvent('skill_select', { skill: skillName });
     setSelectedSkills(updatedSkills);
     onSkillSelect(updatedSkills);
     localStorage.setItem('selectedSkills', JSON.stringify(updatedSkills));
@@ -326,7 +328,11 @@ export default function Skills({
               step={0.1}
               value={steering}
               disabled={selectedSkills.length === 0}
-              onChange={(e) => onSteeringChange(Number(e.target.value))}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                onSteeringChange(value);
+                trackEventDebounced('steering_change', { value, method: 'slider' });
+              }}
               className="w-40 accent-cyan-400 cursor-pointer disabled:cursor-not-allowed"
             />
             <span className="text-cyan-300 w-8">{steering.toFixed(1)}</span>

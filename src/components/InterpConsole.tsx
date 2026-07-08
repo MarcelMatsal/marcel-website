@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { resolveUnit } from '@/lib/probeData';
+import { trackEvent } from '@/lib/analytics';
 
 interface Line {
   kind: 'in' | 'out' | 'err';
@@ -47,7 +48,10 @@ export default function InterpConsole() {
         target.isContentEditable;
       if ((e.key === '`' || e.key === '~') && !typing) {
         e.preventDefault();
-        setOpen((o) => !o);
+        setOpen((o) => {
+          if (!o) trackEvent('console_open');
+          return !o;
+        });
       }
     };
     window.addEventListener('keydown', onKey);
@@ -73,6 +77,7 @@ export default function InterpConsole() {
     setHistPos(-1);
     const [verb, ...rest] = cmd.split(/\s+/);
     const arg = rest.join(' ');
+    trackEvent('console_command', { command: verb.toLowerCase() });
 
     switch (verb.toLowerCase()) {
       case 'help':
