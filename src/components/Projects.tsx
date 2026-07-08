@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { projectNodes } from '@/lib/probeData';
+import { trackEvent } from '@/lib/analytics';
 import NeuronNode from './NeuronNode';
 import ProbePanel from './ProbePanel';
 import SectionHeading from './SectionHeading';
@@ -233,7 +234,11 @@ export default function Projects({
                   pinged={(pinged && active) || waveIndex === index}
                   ablated={ablated.includes(node.id)}
                   onHoverChange={(h) => setHoverId(h && active ? node.id : null)}
-                  onClick={() => active && setOpenIndex(index)}
+                  onClick={() => {
+                    if (!active) return;
+                    setOpenIndex(index);
+                    trackEvent('probe_open', { unit: node.id, layer: 'projects', method: 'click' });
+                  }}
                 />
               );
             })}
