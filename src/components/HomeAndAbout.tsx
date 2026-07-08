@@ -21,15 +21,26 @@ export default function HomeAndAboutSection() {
   return (
     <section id='home' className="flex flex-col sm:flex-row items-center justify-center min-h-[80vh] gap-8 px-8 sm:px-20">
       {/* Left Side: Image and Social Links */}
-      <div className="flex flex-col items-center sm:items-start">
-        {/* Profile Image */}
-        <Image
-          src="/marcel_pfp.JPEG" // Replace with your actual image file name
-          alt="Marcel Mateos Salles"
-          width={300} // Adjust width as needed
-          height={300} // Adjust height as needed
-          className="rounded-full border-4 border-gray-300 dark:border-gray-700 shadow-lg hover:scale-105 transition-transform duration-300"
-        />
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="relative z-10 flex flex-col items-center sm:items-start"
+      >
+        {/* Profile Image with glowing gradient ring */}
+        <div
+          data-embed="bos"
+          className="rounded-full p-[3px] bg-gradient-to-br from-[#7c3aed] to-[#06b6d4] shadow-[0_0_45px_rgba(124,58,237,0.35),0_0_90px_rgba(6,182,212,0.2)]"
+        >
+          <Image
+            src="/marcel_pfp.JPEG"
+            alt="Marcel Mateos Salles"
+            width={300}
+            height={300}
+            priority
+            className="rounded-full border-4 border-[#05050f] hover:scale-105 transition-transform duration-300"
+          />
+        </div>
 
         {/* Social Links */}
         <div className="flex flex-col items-center w-full">
@@ -126,7 +137,10 @@ export default function HomeAndAboutSection() {
       {/* Right Side: Name, Moving Text, and About Text */}
       <div className="flex flex-col items-center sm:items-start text-center sm:text-left max-w-xl">
         {/* Name */}
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight">
+        <h1
+          data-embed="marcel mateos salles"
+          className="text-4xl sm:text-6xl font-bold tracking-wide text-slate-100"
+        >
           Marcel Mateos Salles
         </h1>
 
@@ -149,12 +163,43 @@ export default function HomeAndAboutSection() {
         </div>
 
         {/* About Text */}
-        <p className="text-gray-600 dark:text-gray-300 mt-1">
-          Hey! I&apos;m Marcel, a recent grad from Brown University with a degree in Computer Science and Economics.
-          I&apos;m a <span className="text-blue-500 font-bold">backend engineer</span> and <span className="text-blue-500 font-bold">ML/AI</span> researcher with a passion for intersecting software
-          engineering with cutting-edge research in ML/AI. My current research interests lie in 
-          LLMs, model interpretability, and self-supervised learning. I&apos;m a member of the <a href="https://galilai-group.github.io/" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">GalilAI Group </a>with <a href="https://randallbalestriero.github.io/" target="_blank" rel="noopener noreferrer" className="text-blue-500 font-bold hover:underline">Prof. Randall Balestriero</a> and an incoming Software Engineer
-          at <span className="text-blue-500 font-bold">Pinterest!</span>
+        <p className="text-slate-300 mt-1">
+          Hey! I&apos;m Marcel, a recent grad from Brown University with a degree
+          in Computer Science and Economics. I&apos;m a{' '}
+          <span data-embed="backend_engineer" className="text-cyan-400 font-bold">
+            backend engineer
+          </span>{' '}
+          and{' '}
+          <span data-embed="ml/ai" className="text-violet-400 font-bold">
+            ML/AI
+          </span>{' '}
+          researcher
+          with a passion for intersecting software engineering with
+          cutting-edge research in ML/AI. My current research interests lie in
+          LLMs, model interpretability, and self-supervised learning. I&apos;m a
+          member of the{' '}
+          <a
+            data-embed="galilai"
+            href="https://galilai-group.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-violet-400 font-bold hover:underline"
+          >
+            GalilAI Group{' '}
+          </a>
+          with{' '}
+          <a
+            href="https://randallbalestriero.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-violet-400 font-bold hover:underline"
+          >
+            Prof. Randall Balestriero
+          </a>{' '}
+          and an incoming Software Engineer at{' '}
+          <span data-embed="pinterest" className="text-cyan-400 font-bold">
+            Pinterest!
+          </span>
         </p>
       </div>
 
