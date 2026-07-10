@@ -20,6 +20,40 @@ const title = "Marcel Mateos Salles · Software Engineer & ML Researcher";
 const description =
   "Backend software engineer and ML researcher (Brown CS-Econ). Explore my experience and projects as an interactive neural network — probe the units, steer the features.";
 
+/* machine-readable identity for search engines and AI answer engines
+   (knowledge panels, citations) — rendered as JSON-LD in <head> */
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Marcel Mateos Salles',
+  alternateName: 'Marcel Matsal',
+  url: 'https://www.marcelmatsal.com',
+  image: 'https://www.marcelmatsal.com/marcel_pfp.JPEG',
+  jobTitle: 'Software Engineer',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Pinterest',
+  },
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'Brown University',
+    sameAs: 'https://www.brown.edu',
+  },
+  email: 'mailto:marcel_mateos_salles@alumni.brown.edu',
+  sameAs: [
+    'https://github.com/MarcelMatsal',
+    'https://www.linkedin.com/in/marcelmatsal/',
+    'https://scholar.google.com/citations?hl=en&user=7QmQOSgAAAAJ',
+  ],
+  knowsAbout: [
+    'Machine learning',
+    'Language model interpretability',
+    'LoRA finetuning and spurious correlations',
+    'Backend software engineering',
+    'Deep learning',
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.marcelmatsal.com"),
   title,
@@ -48,6 +82,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-HTK8GFW1R1"
           strategy="afterInteractive"
